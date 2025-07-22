@@ -256,7 +256,10 @@ function App() {
           {/* 网易云音乐单曲播放器 */}
           <div style={{background: 'rgba(255,255,255,0.92)', borderRadius: 10, boxShadow: '0 2px 8px 0 rgba(79,140,255,0.08)', padding: '0.3em 0.7em', minWidth: 180, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
             <div style={{color: '#4f8cff', fontWeight: 700, fontSize: '1em', marginBottom: 4}}>{musicTitle}</div>
-            <iframe allow="encrypted-media; accelerometer; gyroscope" frameBorder="no" border="0" marginWidth="0" marginHeight="0" width="170" height="52" style={{borderRadius: 8}}
+            <iframe 
+              allow="encrypted-media; accelerometer; gyroscope"
+              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-presentation allow-top-navigation-by-user-activation"
+              frameBorder="no" border="0" marginWidth="0" marginHeight="0" width="170" height="52" style={{borderRadius: 8}}
               src={`https://music.163.com/outchain/player?type=2&id=${songId}&auto=0&height=32`} />
           </div>
         </div>
