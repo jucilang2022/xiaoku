@@ -99,6 +99,21 @@ function App() {
   ];
   const p = profile[lang];
 
+  // galleryTitle 必须放在这里，才能被正确引用
+  const galleryTitle = lang === 'en' ? (
+    <>
+      <FaCameraRetro style={{ color: '#43e97b', fontSize: '1.2em', marginRight: '0.2em' }} />
+      My Photography Portfolio
+      <span style={{ fontSize: '0.7em', color: '#ff6ec4', marginLeft: '0.5em' }}>✦</span>
+    </>
+  ) : (
+    <>
+      <FaCameraRetro style={{ color: '#43e97b', fontSize: '1.2em', marginRight: '0.2em' }} />
+      我的摄影作品集
+      <span style={{ fontSize: '0.7em', color: '#ff6ec4', marginLeft: '0.5em' }}>✦</span>
+    </>
+  );
+
   // 每日一句/签名内容
   const dailyQuotes = {
     zh: [
@@ -128,16 +143,16 @@ function App() {
   const songId = '541326593'; // 默认单曲ID，可替换为你喜欢的单曲
   const musicTitle = lang === 'en' ? 'Music' : '音乐';
 
-  // galleryData 必须放在这里，pic1~pic8 才能访问到
+  // galleryData 支持中英文描述
   const galleryData = [
-    { src: pic1, desc: '为人民服务' },
-    { src: pic2, desc: '魔法城堡' },
-    { src: pic3, desc: '猫猫猫' },
-    { src: pic4, desc: '繁华' },
-    { src: pic5, desc: '欧洲风情' },
-    { src: pic6, desc: '花园' },
-    { src: pic7, desc: '飞机划过城堡' },
-    { src: pic8, desc: '中国瓷器' },
+    { src: pic1, desc: { zh: '晨曦下的湖面', en: 'Lake at Dawn' } },
+    { src: pic2, desc: { zh: '城市夜色', en: 'City Nightscape' } },
+    { src: pic3, desc: { zh: '林间小路', en: 'Forest Path' } },
+    { src: pic4, desc: { zh: '远山与云', en: 'Distant Mountains & Clouds' } },
+    { src: pic5, desc: { zh: '海边日落', en: 'Sunset by the Sea' } },
+    { src: pic6, desc: { zh: '静谧的午后', en: 'Tranquil Afternoon' } },
+    { src: pic7, desc: { zh: '繁星点点', en: 'Starry Night' } },
+    { src: pic8, desc: { zh: '街头一角', en: 'A Corner of the Street' } },
   ];
 
   const handleAvatarClick = () => {
@@ -300,15 +315,13 @@ function App() {
     // 作品集页
     <div key="gallery" className="page-content blank-page">
       <h2 style={{ color: '#a084ee', marginTop: '2em', textAlign: 'center', marginBottom: '1.5em', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.6em', fontWeight: 800, fontSize: '2em', letterSpacing: '0.05em' }}>
-        <FaCameraRetro style={{ color: '#43e97b', fontSize: '1.2em', marginRight: '0.2em' }} />
-        我的摄影作品集
-        <span style={{ fontSize: '0.7em', color: '#ff6ec4', marginLeft: '0.5em' }}>✦</span>
+        {galleryTitle}
       </h2>
       <div className="gallery-grid">
         {galleryData.map((item, i) => (
           <div className="gallery-item" key={i}>
             <img src={item.src} alt={`pic${i + 1}`} className="gallery-img" onClick={() => setPreviewIdx(i)} style={{ cursor: 'pointer' }} />
-            <div className="gallery-desc">{item.desc}</div>
+            <div className="gallery-desc">{item.desc[lang]}</div>
           </div>
         ))}
       </div>
@@ -317,8 +330,8 @@ function App() {
         <div className="preview-mask" onClick={() => setPreviewIdx(null)}>
           <div className="preview-modal" onClick={e => e.stopPropagation()}>
             <img src={galleryData[previewIdx].src} alt="preview" className="preview-img" />
-            <div className="preview-desc">{galleryData[previewIdx].desc}</div>
-            <button className="preview-close" onClick={() => setPreviewIdx(null)}>关闭</button>
+            <div className="preview-desc">{galleryData[previewIdx].desc[lang]}</div>
+            <button className="preview-close" onClick={() => setPreviewIdx(null)}>{lang === 'en' ? 'Close' : '关闭'}</button>
           </div>
         </div>
       )}
