@@ -33,8 +33,8 @@ const profile = {
     ],
   },
   en: {
-    name: 'Yueliang',
-    desc: "Hi, I'm Yueliang, a young developer passionate about frontend and life. I love exploring new tech and sharing my journey.",
+    name: 'JuCilang',
+    desc: "Hi, I'm JuCilang, a young developer passionate about frontend and life. I love exploring new tech and sharing my journey.",
     links: [
       { icon: <SiDouban />, name: 'Douban', url: 'https://www.douban.com/people/230674291' },
       { icon: <SiXiaohongshu />, name: 'Xiaohongshu', url: 'https://www.xiaohongshu.com/user/profile/5e8efca8000000000100a2d3' },
