@@ -145,14 +145,14 @@ function App() {
 
   // galleryData 支持中英文描述
   const galleryData = [
-    { src: pic1, desc: { zh: '晨曦下的湖面', en: 'Lake at Dawn' } },
-    { src: pic2, desc: { zh: '城市夜色', en: 'City Nightscape' } },
-    { src: pic3, desc: { zh: '林间小路', en: 'Forest Path' } },
-    { src: pic4, desc: { zh: '远山与云', en: 'Distant Mountains & Clouds' } },
-    { src: pic5, desc: { zh: '海边日落', en: 'Sunset by the Sea' } },
-    { src: pic6, desc: { zh: '静谧的午后', en: 'Tranquil Afternoon' } },
-    { src: pic7, desc: { zh: '繁星点点', en: 'Starry Night' } },
-    { src: pic8, desc: { zh: '街头一角', en: 'A Corner of the Street' } },
+    { src: pic1, desc: { zh: '为人民服务', en: 'Serve the People' } },
+    { src: pic2, desc: { zh: '魔法城堡', en: 'Magic Castle' } },
+    { src: pic3, desc: { zh: '猫猫猫', en: 'Cat Cat Cat' } },
+    { src: pic4, desc: { zh: '繁华', en: 'Bustling City' } },
+    { src: pic5, desc: { zh: '欧洲风情', en: 'European Style' } },
+    { src: pic6, desc: { zh: '花园', en: 'Garden' } },
+    { src: pic7, desc: { zh: '飞机划过城堡', en: 'Airplane Flying Past Castle' } },
+    { src: pic8, desc: { zh: '中国瓷器', en: 'China china' } },
   ];
 
   const handleAvatarClick = () => {
