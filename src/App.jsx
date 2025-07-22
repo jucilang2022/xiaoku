@@ -252,14 +252,11 @@ function App() {
           minHeight: 80,
         }}>
           {/* 小游戏入口按钮 */}
-          <button className="game-btn" onClick={handleOpenGameModal} style={{background: '#a084ee', color: '#fff', fontWeight: 700, fontSize: '1.08em', borderRadius: 10, padding: '0.5em 1.5em', border: 'none', cursor: 'pointer', boxShadow: '0 2px 8px 0 rgba(160,132,238,0.10)'}}>🎮 {t.gameBtn}</button>
+          <button className="game-btn" onClick={handleOpenGameModal} style={{ background: '#a084ee', color: '#fff', fontWeight: 700, fontSize: '1.08em', borderRadius: 10, padding: '0.5em 1.5em', border: 'none', cursor: 'pointer', boxShadow: '0 2px 8px 0 rgba(160,132,238,0.10)' }}>🎮 {t.gameBtn}</button>
           {/* 网易云音乐单曲播放器 */}
-          <div style={{background: 'rgba(255,255,255,0.92)', borderRadius: 10, boxShadow: '0 2px 8px 0 rgba(79,140,255,0.08)', padding: '0.3em 0.7em', minWidth: 180, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-            <div style={{color: '#4f8cff', fontWeight: 700, fontSize: '1em', marginBottom: 4}}>{musicTitle}</div>
-            <iframe 
-              allow="encrypted-media; accelerometer; gyroscope"
-              sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-presentation allow-top-navigation-by-user-activation"
-              frameBorder="no" border="0" marginWidth="0" marginHeight="0" width="170" height="52" style={{borderRadius: 8}}
+          <div style={{ background: 'rgba(255,255,255,0.92)', borderRadius: 10, boxShadow: '0 2px 8px 0 rgba(79,140,255,0.08)', padding: '0.3em 0.7em', minWidth: 180, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ color: '#4f8cff', fontWeight: 700, fontSize: '1em', marginBottom: 4 }}>{musicTitle}</div>
+            <iframe allow="encrypted-media; accelerometer; gyroscope" frameBorder="no" border="0" marginWidth="0" marginHeight="0" width="170" height="52" style={{ borderRadius: 8 }}
               src={`https://music.163.com/outchain/player?type=2&id=${songId}&auto=0&height=32`} />
           </div>
         </div>
@@ -296,19 +293,19 @@ function App() {
       {/* 联系方式答题弹窗 */}
       {showContactQuiz && (
         <div className="contact-modal-mask" onClick={() => setShowContactQuiz(false)}>
-          <div className="contact-modal" style={{minWidth: 260}} onClick={e => e.stopPropagation()}>
-            <h2 style={{marginBottom: '1em', color: '#26a69a', fontWeight: 700, fontSize: '1.2em'}}>{lang === 'zh' ? '我的真实姓名是？' : 'What is my real name?'}</h2>
+          <div className="contact-modal" style={{ minWidth: 260 }} onClick={e => e.stopPropagation()}>
+            <h2 style={{ marginBottom: '1em', color: '#26a69a', fontWeight: 700, fontSize: '1.2em' }}>{lang === 'zh' ? '我的真实姓名是？' : 'What is my real name?'}</h2>
             <input
               type="text"
               value={quizInput}
               onChange={e => { setQuizInput(e.target.value); setQuizError(''); }}
               placeholder={lang === 'zh' ? '请输入...' : 'Please enter...'}
-              style={{width: '100%', padding: '0.6em', fontSize: '1em', borderRadius: 8, border: '1.5px solid #b2ebf2', marginBottom: 12}}
+              style={{ width: '100%', padding: '0.6em', fontSize: '1em', borderRadius: 8, border: '1.5px solid #b2ebf2', marginBottom: 12 }}
               onKeyDown={e => { if (e.key === 'Enter') { handleQuizSubmit(); } }}
               autoFocus
             />
-            {quizError && <div style={{color: '#ff6ec4', marginBottom: 8, fontWeight: 600}}>{quizError}</div>}
-            <button className="contact-btn" style={{width: '100%', marginBottom: 8}} onClick={handleQuizSubmit}>
+            {quizError && <div style={{ color: '#ff6ec4', marginBottom: 8, fontWeight: 600 }}>{quizError}</div>}
+            <button className="contact-btn" style={{ width: '100%', marginBottom: 8 }} onClick={handleQuizSubmit}>
               {lang === 'zh' ? '提交' : 'Submit'}
             </button>
             <button className="close-btn" onClick={() => setShowContactQuiz(false)}>{lang === 'zh' ? '取消' : 'Cancel'}</button>
