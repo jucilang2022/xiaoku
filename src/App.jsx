@@ -45,7 +45,7 @@ function App() {
       {/* 右上角头像 */}
       <img
         className="avatar-floating"
-        src="	https://img3.doubanio.com/icon/ul286690466-2.jpg"
+        src="https://img3.doubanio.com/icon/ul286690466-2.jpg"
         alt="avatar"
       />
       <div className="lang-switch">
