@@ -216,7 +216,8 @@ function App() {
     // 主页内容
     (
       <div key="main" className="page-content">
-        <DigitalClock lang={lang} />
+        {/* 电子时钟 */}
+        {/* <DigitalClock lang={lang} /> */}
         <div className="rainbow-bar"></div>
         {/* 右上角头像 */}
         <img
