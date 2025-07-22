@@ -1,0 +1,21 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 猫咪头部 -->
+  <ellipse cx="32" cy="40" rx="16" ry="14" fill="#FFD966"/>
+  <!-- 左耳朵 -->
+  <polygon points="16,32 10,16 24,28" fill="#FFD966"/>
+  <polygon points="16,32 13,20 20,27" fill="#FFB366"/>
+  <!-- 右耳朵 -->
+  <polygon points="48,32 54,16 40,28" fill="#FFD966"/>
+  <polygon points="48,32 51,20 44,27" fill="#FFB366"/>
+  <!-- 脸颊腮红 -->
+  <ellipse cx="22" cy="46" rx="2.5" ry="1.2" fill="#FFB6B6"/>
+  <ellipse cx="42" cy="46" rx="2.5" ry="1.2" fill="#FFB6B6"/>
+  <!-- 眼睛 -->
+  <ellipse cx="26" cy="40" rx="2" ry="2.5" fill="#333"/>
+  <ellipse cx="38" cy="40" rx="2" ry="2.5" fill="#333"/>
+  <!-- 鼻子 -->
+  <ellipse cx="32" cy="44" rx="1.2" ry="0.8" fill="#FF8888"/>
+  <!-- 嘴巴 -->
+  <path d="M32 45 Q33 46 34 45" stroke="#B35C44" stroke-width="1" fill="none"/>
+  <path d="M32 45 Q31 46 30 45" stroke="#B35C44" stroke-width="1" fill="none"/>
+</svg>
