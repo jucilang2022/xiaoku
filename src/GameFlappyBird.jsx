@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from 'react';
 const GAME_W = 320;
 const GAME_H = 400;
 const BIRD_SIZE = 32;
-const GRAVITY = 0.5;
+const GRAVITY = 0.35;
 const FLAP = -6.0;
 const PIPE_W = 48;
 const PIPE_GAP = 110;
