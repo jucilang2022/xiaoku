@@ -156,8 +156,8 @@ export default function GameEliminate({ lang = 'zh', onBack }) {
       <div style={{ marginBottom: 10, color: '#888', fontSize: '1em' }}>{t.tip}</div>
       <div style={{
         display: 'grid',
-        gridTemplateColumns: `repeat(${size}, 40px)`,
-        gridTemplateRows: `repeat(${size}, 40px)`,
+        gridTemplateColumns: `repeat(${size}, 42px)`,
+        gridTemplateRows: `repeat(${size}, 42px)`,
         gap: 2,
         background: '#eee',
         borderRadius: 10,
@@ -169,7 +169,7 @@ export default function GameEliminate({ lang = 'zh', onBack }) {
             key={i}
             onClick={() => handleClick(i)}
             style={{
-              width: 40, height: 40,
+              width: 42, height: 42,
               background: fruits[f] ? fruits[f].color : '#fff',
               borderRadius: 6,
               border: selected === i ? '2px solid #ff6ec4' : '1px solid #fff',
