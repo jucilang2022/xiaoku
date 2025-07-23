@@ -435,6 +435,26 @@ html::-webkit-scrollbar, body::-webkit-scrollbar, .homepage-container::-webkit-s
   flex-direction: column;
   align-items: center;
   animation: modal-pop 0.25s cubic-bezier(.68, -0.55, .27, 1.55);
+  min-height: 120px;
+}
+/* 留言簿弹窗尺寸优化 */
+.guestbook-modal {
+  min-width: 380px;
+  min-height: 340px;
+  max-width: 96vw;
+  max-height: 90vh;
+}
+@media (max-width: 600px) {
+  .guestbook-modal {
+    min-width: 0;
+    min-height: 0;
+    width: 90vw !important;
+    height: 70vh !important;
+    max-width: 98vw;
+    max-height: 98vh;
+    border-radius: 14px;
+    padding: 1em 0.5em 1em 0.5em;
+  }
 }
 
 @keyframes modal-pop {
@@ -711,4 +731,98 @@ html::-webkit-scrollbar, body::-webkit-scrollbar, .homepage-container::-webkit-s
   .gallery-img {
     height: 90px;
   }
+}
+
+.page-anim-page {
+  position: absolute;
+  width: 100vw;
+  min-height: 100vh;
+  left: 0;
+  top: 0;
+  transition: none;
+  z-index: 1;
+  background: transparent;
+}
+.page-slider {
+  position: relative;
+  overflow: hidden;
+}
+.anim-in.anim-up {
+  animation: pageInUp 0.35s cubic-bezier(.68,-0.55,.27,1.55) both;
+  z-index: 2;
+}
+.anim-out.anim-up {
+  animation: pageOutUp 0.35s cubic-bezier(.68,-0.55,.27,1.55) both;
+  z-index: 1;
+}
+.anim-in.anim-down {
+  animation: pageInDown 0.35s cubic-bezier(.68,-0.55,.27,1.55) both;
+  z-index: 2;
+}
+.anim-out.anim-down {
+  animation: pageOutDown 0.35s cubic-bezier(.68,-0.55,.27,1.55) both;
+  z-index: 1;
+}
+@keyframes pageInUp {
+  0% { opacity: 0; transform: translateY(100%); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes pageOutUp {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-40%); }
+}
+@keyframes pageInDown {
+  0% { opacity: 0; transform: translateY(-100%); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes pageOutDown {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(40%); }
+}
+.guestbook-btn {
+  background: #4f8cff;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.6em 2.2em;
+  font-size: 1.1em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 8px 0 rgba(79,140,255,0.10);
+  margin-left: 1.2em;
+  transition: background 0.2s, color 0.2s;
+}
+.guestbook-btn:hover {
+  background: #43e97b;
+  color: #fff;
+}
+.guestbook-add-btn {
+  background: #4f8cff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5em 1.5em;
+  font-size: 1.08em;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  transition: background 0.2s, color 0.2s;
+}
+.guestbook-add-btn:hover {
+  background: #43e97b;
+  color: #fff;
+}
+.guestbook-list {
+  width: 100%;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-bottom: 1em;
+}
+.guestbook-msg {
+  background: none;
+  border-radius: 10px;
+  padding: 0.5em 0.2em 0.2em 0.2em;
+  margin-bottom: 0.7em;
+  border-bottom: 1px solid #e0f7fa;
 }
