@@ -193,6 +193,7 @@ function App() {
       game2048: '2048',
       flappy: 'Flappy Bird',
       gameBtn: '小游戏',
+      puzzle: '拼图',
     },
     en: {
       select: 'Choose a mini game',
@@ -200,6 +201,7 @@ function App() {
       game2048: '2048',
       flappy: 'Flappy Bird',
       gameBtn: 'Mini Game',
+      puzzle: 'Puzzle',
     },
   };
   const t = texts[lang] || texts.zh;
@@ -268,19 +270,19 @@ function App() {
           <h1>{p.name}</h1>
           <p className="desc">{p.desc}</p>
           {/* 每日一句/签名模块（暂时注释）
-          <div style={{
-            margin: '0.5em 0 1.2em 0',
-            padding: '0.7em 1.2em',
-            background: 'rgba(79,140,255,0.08)',
-            borderRadius: 10,
-            color: '#4f8cff',
-            fontWeight: 600,
-            fontSize: '1.08em',
-            textAlign: 'center',
-            boxShadow: '0 2px 8px 0 rgba(79,140,255,0.06)',
-            letterSpacing: '0.5px',
-          }}>{todayQuote}</div>
-          */}
+        <div style={{
+          margin: '0.5em 0 1.2em 0',
+          padding: '0.7em 1.2em',
+          background: 'rgba(79,140,255,0.08)',
+          borderRadius: 10,
+          color: '#4f8cff',
+          fontWeight: 600,
+          fontSize: '1.08em',
+          textAlign: 'center',
+          boxShadow: '0 2px 8px 0 rgba(79,140,255,0.06)',
+          letterSpacing: '0.5px',
+        }}>{todayQuote}</div>
+        */}
           <div className="links">
             {p.links.map((link) => (
               <a
@@ -488,7 +490,7 @@ function App() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1em', alignItems: 'center' }}>
                   <button onClick={() => handleSelectGame('2048')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#43e97b', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.game2048}</button>
                   <button onClick={() => handleSelectGame('flappy')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#ff6ec4', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.flappy}</button>
-                  <button onClick={() => handleSelectGame('puzzle')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#4f8cff', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>Puzzle pintu</button>
+                  <button onClick={() => handleSelectGame('puzzle')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#4f8cff', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.puzzle}</button>
                 </div>
                 <button className="close-btn" style={{ marginTop: '2em' }} onClick={handleCloseGameModal}>{t.close}</button>
               </>
