@@ -213,7 +213,6 @@ export default function GamePuzzle({ lang = 'zh', onBack }) {
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, width: '100%' }}>
               <button onClick={onBack} style={{ background: '#b2ebf2', color: '#00796b', border: 'none', borderRadius: 8, padding: '0.5em 1.5em', fontWeight: 700, width: 120, cursor: 'pointer' }}>{t.back}</button>
               <button onClick={resetGame} style={{ background: '#a084ee', color: '#fff', border: 'none', borderRadius: 8, padding: '0.5em 1.5em', fontWeight: 700, width: 120, cursor: 'pointer' }}>{t.reset}</button>
-              <button onClick={openImgSel} style={{ background: '#4f8cff', color: '#fff', border: 'none', borderRadius: 8, padding: '0.5em 1.5em', fontWeight: 700, width: 120, cursor: 'pointer' }}>{t.changeImg}</button>
             </div>
             {/* 胜利弹窗 */}
             {win && (
