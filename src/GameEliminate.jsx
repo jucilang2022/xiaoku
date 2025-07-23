@@ -101,7 +101,7 @@ export default function GameEliminate({ lang = 'zh', onBack }) {
       return;
     }
     if (!isAdjacent(selected, idx)) {
-      setSelected(idx);
+      setSelected(null); // 优化：无效点击也清空选择，防止卡死
       return;
     }
     // 尝试交换
@@ -109,11 +109,9 @@ export default function GameEliminate({ lang = 'zh', onBack }) {
     [newGrid[selected], newGrid[idx]] = [newGrid[idx], newGrid[selected]];
     const matched = findMatches(newGrid);
     if (matched.size === 0) {
-      // 不能消除，还原
       setSelected(null);
       return;
     }
-    // 可以消除
     setAnimating(true);
     setGrid(newGrid);
     setSelected(null);
@@ -147,7 +145,7 @@ export default function GameEliminate({ lang = 'zh', onBack }) {
       if (nextMatched.size > 0) {
         setTimeout(() => eliminate(nextGrid, nextMatched, combo + 1), 200);
       } else {
-        setAnimating(false);
+        setAnimating(false); // 优化：确保每次消除后都能重置
       }
     }, 200);
   }
