@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Game2048 from './Game2048.jsx';
 import GameFlappyBird from './GameFlappyBird.jsx';
 import GamePuzzle from './GamePuzzle.jsx';
+import GameEliminate from './GameEliminate.jsx';
 import { SiDouban, SiXiaohongshu, SiGithub, SiTencentqq, SiWechat, SiNeteasecloudmusic } from 'react-icons/si';
 import { Email } from '@mui/icons-material';
 import './App.css';
@@ -194,6 +195,7 @@ function App() {
       flappy: '小鸟飞飞',
       gameBtn: '小游戏',
       puzzle: '拼图',
+      eliminate: '消消乐',
     },
     en: {
       select: 'Choose a mini game',
@@ -202,6 +204,7 @@ function App() {
       flappy: 'Flappy Bird',
       gameBtn: 'Mini Game',
       puzzle: 'Puzzle',
+      eliminate: 'Eliminate',
     },
   };
   const t = texts[lang] || texts.zh;
@@ -491,6 +494,7 @@ function App() {
                   <button onClick={() => handleSelectGame('2048')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#43e97b', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.game2048}</button>
                   <button onClick={() => handleSelectGame('flappy')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#ff6ec4', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.flappy}</button>
                   <button onClick={() => handleSelectGame('puzzle')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#4f8cff', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.puzzle}</button>
+                  <button onClick={() => handleSelectGame('eliminate')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#26a69a', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.eliminate}</button>
                 </div>
                 <button className="close-btn" style={{ marginTop: '2em' }} onClick={handleCloseGameModal}>{t.close}</button>
               </>
@@ -503,6 +507,9 @@ function App() {
             )}
             {selectedGame === 'puzzle' && (
               <GamePuzzle lang={lang} onBack={() => setSelectedGame(null)} />
+            )}
+            {selectedGame === 'eliminate' && (
+              <GameEliminate lang={lang} onBack={() => setSelectedGame(null)} />
             )}
           </div>
         </div>
