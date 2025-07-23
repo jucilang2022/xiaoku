@@ -151,13 +151,13 @@ export default function GameEliminate({ lang = 'zh', onBack }) {
   }
 
   return (
-    <div style={{ minWidth: 340, minHeight: 340, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div style={{ minWidth: 380, minHeight: 380, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <h2 style={{ color: '#a084ee', marginBottom: '0.5em', fontWeight: 800 }}>{t.title}</h2>
       <div style={{ marginBottom: 10, color: '#888', fontSize: '1em' }}>{t.tip}</div>
       <div style={{
         display: 'grid',
-        gridTemplateColumns: `repeat(${size}, 36px)`,
-        gridTemplateRows: `repeat(${size}, 36px)`,
+        gridTemplateColumns: `repeat(${size}, 40px)`,
+        gridTemplateRows: `repeat(${size}, 40px)`,
         gap: 2,
         background: '#eee',
         borderRadius: 10,
@@ -169,7 +169,7 @@ export default function GameEliminate({ lang = 'zh', onBack }) {
             key={i}
             onClick={() => handleClick(i)}
             style={{
-              width: 36, height: 36,
+              width: 40, height: 40,
               background: fruits[f] ? fruits[f].color : '#fff',
               borderRadius: 6,
               border: selected === i ? '2px solid #ff6ec4' : '1px solid #fff',
