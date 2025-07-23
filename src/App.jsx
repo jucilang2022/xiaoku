@@ -191,7 +191,7 @@ function App() {
       select: '选择一个小游戏',
       close: '关闭',
       game2048: '2048',
-      flappy: 'Flappy Bird',
+      flappy: '小鸟飞飞',
       gameBtn: '小游戏',
       puzzle: '拼图',
     },
