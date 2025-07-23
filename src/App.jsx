@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Game2048 from './Game2048.jsx';
 import GameFlappyBird from './GameFlappyBird.jsx';
+import GamePuzzle from './GamePuzzle.jsx';
 import { SiDouban, SiXiaohongshu, SiGithub, SiTencentqq, SiWechat, SiNeteasecloudmusic } from 'react-icons/si';
 import { Email } from '@mui/icons-material';
 import './App.css';
@@ -208,6 +209,11 @@ function App() {
   const [pageTrans, setPageTrans] = useState(''); // 动画方向
   const [isScrolling, setIsScrolling] = useState(false); // 防抖
 
+  // 新增：动画切换相关状态
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [animDirection, setAnimDirection] = useState(null); // 'up' or 'down'
+  const [nextPageIndex, setNextPageIndex] = useState(null);
+
   // 作品集页相关状态
   const [previewIdx, setPreviewIdx] = useState(null); // 当前预览图片索引
 
@@ -216,7 +222,6 @@ function App() {
     // 主页内容
     (
       <div key="main" className="page-content">
-        {/* 电子时钟 */}
         {/* <DigitalClock lang={lang} /> */}
         <div className="rainbow-bar"></div>
         {/* 右上角头像 */}
@@ -345,20 +350,24 @@ function App() {
 
   // 翻页事件（带防抖）
   function goToPage(idx, direction) {
-    if (idx === pageIndex || idx < 0 || idx >= pages.length || isScrolling) return;
+    if (idx === pageIndex || idx < 0 || idx >= pages.length || isScrolling || isAnimating) return;
     setIsScrolling(true);
-    setPageTrans(direction);
+    setIsAnimating(true);
+    setAnimDirection(direction === 'slide-up' ? 'up' : 'down');
+    setNextPageIndex(idx);
     setTimeout(() => {
+      setIsAnimating(false);
+      setAnimDirection(null);
+      setNextPageIndex(null);
       setPageIndex(idx);
-      setPageTrans('');
-      setTimeout(() => setIsScrolling(false), 80); // 动画后短暂解锁
-    }, 350); // 动画时长
+      setTimeout(() => setIsScrolling(false), 80);
+    }, 350);
   }
 
   // 处理鼠标滚轮
   useEffect(() => {
     const handleWheel = (e) => {
-      if (isScrolling) return;
+      if (isScrolling || isAnimating) return;
       if (e.deltaY > 30) {
         goToPage(pageIndex + 1, 'slide-up'); // 下滑进入下一页
       } else if (e.deltaY < -30) {
@@ -367,7 +376,7 @@ function App() {
     };
     window.addEventListener('wheel', handleWheel, { passive: true });
     return () => window.removeEventListener('wheel', handleWheel);
-  }, [pageIndex, isScrolling]);
+  }, [pageIndex, isScrolling, isAnimating]);
 
   // 处理触摸滑动
   useEffect(() => {
@@ -378,7 +387,7 @@ function App() {
       }
     };
     const handleTouchEnd = (e) => {
-      if (startY === null || isScrolling) return;
+      if (startY === null || isScrolling || isAnimating) return;
       const endY = e.changedTouches[0].clientY;
       const deltaY = endY - startY;
       if (deltaY < -40) {
@@ -394,13 +403,75 @@ function App() {
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [pageIndex, isScrolling]);
+  }, [pageIndex, isScrolling, isAnimating]);
+
+  // 渲染动画内容
+  let pageSliderContent;
+  if (isAnimating && nextPageIndex !== null) {
+    // 动画中，渲染当前页和目标页
+    pageSliderContent = (
+      <>
+        <div className={`page-anim-page anim-out anim-${animDirection}`}>{pages[pageIndex]}</div>
+        <div className={`page-anim-page anim-in anim-${animDirection}`}>{pages[nextPageIndex]}</div>
+      </>
+    );
+  } else {
+    // 静止时只渲染当前页
+    pageSliderContent = pages[pageIndex];
+  }
+
+  // 留言簿相关状态
+  const [showGuestbook, setShowGuestbook] = useState(false);
+  const [showAddMsg, setShowAddMsg] = useState(false);
+  const [guestbook, setGuestbook] = useState([]);
+  const [msgName, setMsgName] = useState('');
+  const [msgContent, setMsgContent] = useState('');
+  const [msgError, setMsgError] = useState('');
+
+  // 留言本地存储
+  useEffect(() => {
+    const data = localStorage.getItem('guestbook');
+    if (data) setGuestbook(JSON.parse(data));
+  }, []);
+  useEffect(() => {
+    localStorage.setItem('guestbook', JSON.stringify(guestbook));
+  }, [guestbook]);
+
+  // 留言按钮文本
+  const guestbookBtnText = lang === 'en' ? 'Guestbook' : '留言簿';
+  const addMsgBtnText = lang === 'en' ? 'Add Message' : '添加留言';
+  const addMsgTitle = lang === 'en' ? 'Add a Message' : '添加留言';
+  const namePlaceholder = lang === 'en' ? 'Your name...' : '你的昵称...';
+  const contentPlaceholder = lang === 'en' ? 'Your message...' : '留言内容...';
+  const confirmText = lang === 'en' ? 'Confirm' : '确定';
+  const cancelText = lang === 'en' ? 'Cancel' : '取消';
+  const msgNameEmpty = lang === 'en' ? 'Please enter your name.' : '请输入昵称。';
+  const msgContentEmpty = lang === 'en' ? 'Please enter your message.' : '请输入留言内容。';
+  const noMsgText = lang === 'en' ? 'No messages yet.' : '暂无留言。';
+
+  // 添加留言
+  function handleAddMsg() {
+    if (!msgName.trim()) {
+      setMsgError(msgNameEmpty); return;
+    }
+    if (!msgContent.trim()) {
+      setMsgError(msgContentEmpty); return;
+    }
+    setGuestbook([
+      ...guestbook,
+      { name: msgName.trim(), content: msgContent.trim(), time: new Date().toLocaleString(lang === 'en' ? 'en-US' : 'zh-CN', { hour12: false }) }
+    ]);
+    setShowAddMsg(false);
+    setMsgName('');
+    setMsgContent('');
+    setMsgError('');
+  }
 
   return (
     <div className="homepage-container">
       {/* 翻页内容区 */}
-      <div className={`page-slider ${pageTrans}`}>
-        {pages[pageIndex]}
+      <div className="page-slider" style={{ overflow: 'hidden' }}>
+        {pageSliderContent}
       </div>
       {/* 移除页码指示器 */}
       {/* <div className="page-nav-btns" style={{ pointerEvents: 'none' }}>
@@ -417,6 +488,7 @@ function App() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1em', alignItems: 'center' }}>
                   <button onClick={() => handleSelectGame('2048')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#43e97b', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.game2048}</button>
                   <button onClick={() => handleSelectGame('flappy')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#ff6ec4', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.flappy}</button>
+                  <button onClick={() => handleSelectGame('puzzle')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#4f8cff', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>Puzzle pintu</button>
                 </div>
                 <button className="close-btn" style={{ marginTop: '2em' }} onClick={handleCloseGameModal}>{t.close}</button>
               </>
@@ -427,15 +499,65 @@ function App() {
             {selectedGame === 'flappy' && (
               <GameFlappyBird lang={lang} />
             )}
+            {selectedGame === 'puzzle' && (
+              <GamePuzzle lang={lang} onBack={() => setSelectedGame(null)} />
+            )}
           </div>
         </div>
       )}
-      {/* 页脚联系方式按钮 */}
+      {/* 页脚联系方式+留言簿按钮 */}
       <footer className="footer-contact">
         <button className="contact-btn" onClick={() => { setShowContactQuiz(true); setQuizInput(''); setQuizError(''); }}>
           {lang === 'zh' ? '联系方式' : 'Contact'}
         </button>
+        <button className="guestbook-btn" onClick={() => setShowGuestbook(true)}>{guestbookBtnText}</button>
       </footer>
+      {/* 留言簿弹窗 */}
+      {showGuestbook && (
+        <div className="contact-modal-mask" onClick={() => setShowGuestbook(false)}>
+          <div className="contact-modal guestbook-modal" onClick={e => e.stopPropagation()}>
+            <h2 style={{ marginBottom: '1em', color: '#4f8cff', fontWeight: 700, fontSize: '1.2em' }}>{guestbookBtnText}</h2>
+            <div className="guestbook-list" style={{ maxHeight: 260, overflowY: 'auto', width: '100%', marginBottom: 16 }}>
+              {guestbook.length === 0 ? (
+                <div style={{ color: '#aaa', textAlign: 'center', margin: '2em 0' }}>{noMsgText}</div>
+              ) : guestbook.map((msg, i) => (
+                <div className="guestbook-msg" key={i} style={{ marginBottom: 18, borderBottom: '1px solid #e0f7fa', paddingBottom: 8 }}>
+                  <div style={{ fontWeight: 700, color: '#43e97b', fontSize: '1.08em' }}>{msg.name}</div>
+                  <div style={{ color: '#333', margin: '0.3em 0 0.2em 0', wordBreak: 'break-all' }}>{msg.content}</div>
+                  <div style={{ color: '#bbb', fontSize: '0.92em' }}>{msg.time}</div>
+                </div>
+              ))}
+            </div>
+            <button className="guestbook-add-btn" onClick={() => setShowAddMsg(true)}>{addMsgBtnText}</button>
+            <button className="close-btn" style={{ marginTop: 10 }} onClick={() => setShowGuestbook(false)}>{cancelText}</button>
+          </div>
+        </div>
+      )}
+      {/* 添加留言弹窗 */}
+      {showAddMsg && (
+        <div className="contact-modal-mask" onClick={() => setShowAddMsg(false)}>
+          <div className="contact-modal" style={{ minWidth: 260, maxWidth: 380 }} onClick={e => e.stopPropagation()}>
+            <h2 style={{ marginBottom: '1em', color: '#4f8cff', fontWeight: 700, fontSize: '1.2em' }}>{addMsgTitle}</h2>
+            <input
+              type="text"
+              value={msgName}
+              onChange={e => { setMsgName(e.target.value); setMsgError(''); }}
+              placeholder={namePlaceholder}
+              style={{ width: '100%', padding: '0.6em', fontSize: '1em', borderRadius: 8, border: '1.5px solid #b2ebf2', marginBottom: 12 }}
+              autoFocus
+            />
+            <textarea
+              value={msgContent}
+              onChange={e => { setMsgContent(e.target.value); setMsgError(''); }}
+              placeholder={contentPlaceholder}
+              style={{ width: '100%', padding: '0.6em', fontSize: '1em', borderRadius: 8, border: '1.5px solid #b2ebf2', marginBottom: 12, minHeight: 60, resize: 'vertical' }}
+            />
+            {msgError && <div style={{ color: '#ff6ec4', marginBottom: 8, fontWeight: 600 }}>{msgError}</div>}
+            <button className="guestbook-add-btn" style={{ width: '100%', marginBottom: 8 }} onClick={handleAddMsg}>{confirmText}</button>
+            <button className="close-btn" onClick={() => setShowAddMsg(false)}>{cancelText}</button>
+          </div>
+        </div>
+      )}
       {/* 联系方式答题弹窗 */}
       {showContactQuiz && (
         <div className="contact-modal-mask" onClick={() => setShowContactQuiz(false)}>
