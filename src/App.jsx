@@ -3,6 +3,8 @@ import Game2048 from './Game2048.jsx';
 import GameFlappyBird from './GameFlappyBird.jsx';
 import GamePuzzle from './GamePuzzle.jsx';
 import GameEliminate from './GameEliminate.jsx';
+import GameSnake from './GameSnake.jsx';
+import GameKnife from './GameKnife.jsx';
 import { SiDouban, SiXiaohongshu, SiGithub, SiTencentqq, SiWechat, SiNeteasecloudmusic } from 'react-icons/si';
 import { Email } from '@mui/icons-material';
 import './App.css';
@@ -495,6 +497,10 @@ function App() {
                   <button onClick={() => handleSelectGame('flappy')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#ff6ec4', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.flappy}</button>
                   <button onClick={() => handleSelectGame('puzzle')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#4f8cff', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.puzzle}</button>
                   <button onClick={() => handleSelectGame('eliminate')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#26a69a', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{t.eliminate}</button>
+                  {/* 新增贪吃蛇按钮 */}
+                  <button onClick={() => handleSelectGame('snake')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#00dbff', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{lang === 'en' ? 'Snake' : '贪吃蛇'}</button>
+                  {/* 新增飞刀挑战按钮 */}
+                  <button onClick={() => handleSelectGame('knife')} style={{ padding: '0.7em 2em', fontSize: '1.1em', borderRadius: 8, border: 'none', background: '#fc8064', color: '#fff', fontWeight: 600, cursor: 'pointer' }}>{lang === 'en' ? 'Knife Hit' : '飞刀挑战'}</button>
                 </div>
                 <button className="close-btn" style={{ marginTop: '2em' }} onClick={handleCloseGameModal}>{t.close}</button>
               </>
@@ -510,6 +516,14 @@ function App() {
             )}
             {selectedGame === 'eliminate' && (
               <GameEliminate lang={lang} onBack={() => setSelectedGame(null)} />
+            )}
+            {/* 新增贪吃蛇入口 */}
+            {selectedGame === 'snake' && (
+              <GameSnake lang={lang} />
+            )}
+            {/* 新增飞刀挑战入口 */}
+            {selectedGame === 'knife' && (
+              <GameKnife lang={lang} />
             )}
           </div>
         </div>
