@@ -1,12 +1,136 @@
-# React + Vite
+# 导航首页
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一个简约而高级的黑白色调导航页，使用React和Vite构建。
 
-Currently, two official plugins are available:
+## ✨ 特性
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🎨 **简约设计** - 黑白色调，现代简约风格
+- 🔍 **搜索功能** - 集成Google搜索
+- 📱 **响应式设计** - 支持各种设备尺寸
+- 🌙 **深色模式** - 自动适应系统主题
+- 🚀 **快速加载** - 基于Vite的快速开发体验
+- 💫 **流畅动画** - 优雅的悬停和点击效果
 
-## Expanding the ESLint configuration
+## 🚀 快速开始
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 安装依赖
+```bash
+npm install
+```
+
+### 启动开发服务器
+```bash
+npm run dev
+```
+
+### 构建生产版本
+```bash
+npm run build
+```
+
+### 预览生产版本
+```bash
+npm run preview
+```
+
+## 📱 功能说明
+
+### 搜索功能
+- 支持Google搜索
+- 美观的搜索框设计
+- 响应式搜索体验
+
+### 导航分类
+1. **搜索引擎** - Google、百度、必应、搜狗
+2. **购物平台** - 淘宝、京东、天猫、拼多多
+3. **视频娱乐** - 哔哩哔哩、优酷、爱奇艺、腾讯视频
+4. **学习资源** - GitHub、Stack Overflow、MDN、W3Schools
+5. **社交媒体** - 微博、知乎、豆瓣、小红书
+6. **实用工具** - 翻译、天气、日历、邮箱
+
+### 交互特性
+- 卡片悬停效果
+- 平滑的动画过渡
+- 点击跳转外部链接
+- 响应式网格布局
+
+## 🛠️ 技术栈
+
+- **前端框架**: React 19
+- **构建工具**: Vite 4
+- **图标库**: Lucide React
+- **样式**: CSS3 + CSS变量
+- **响应式**: CSS Grid + Flexbox
+
+## 🎨 设计特色
+
+- **配色方案**: 黑白色调为主，蓝色渐变点缀
+- **字体**: 系统字体栈，确保最佳可读性
+- **阴影**: 多层次阴影系统，营造深度感
+- **圆角**: 现代圆角设计，柔和视觉体验
+- **间距**: 精心设计的间距系统，保持视觉平衡
+
+## 📱 响应式支持
+
+- **桌面端**: 1200px+ 完整布局
+- **平板端**: 768px-1199px 适配布局
+- **手机端**: 480px-767px 移动优化
+- **小屏手机**: <480px 紧凑布局
+
+## 🌙 深色模式
+
+自动检测系统主题偏好，提供深色模式支持：
+- 深色背景
+- 高对比度文字
+- 适配的边框和阴影
+
+## 📁 项目结构
+
+```
+nav/
+├── src/
+│   ├── App.jsx          # 主应用组件
+│   ├── App.css          # 主样式文件
+│   ├── main.jsx         # 应用入口
+│   └── index.css        # 全局样式
+├── public/               # 静态资源
+├── package.json          # 项目配置
+└── README.md            # 项目说明
+```
+
+## 🔧 自定义配置
+
+### 添加新的导航链接
+在 `App.jsx` 中的 `navigationCategories` 数组添加新项目：
+
+```javascript
+{
+  name: "网站名称",
+  url: "https://example.com",
+  icon: IconComponent,
+  color: "#颜色代码"
+}
+```
+
+### 修改主题色彩
+在 `App.css` 中修改 CSS 变量：
+
+```css
+:root {
+  --primary-bg: #ffffff;
+  --text-primary: #202124;
+  /* 更多变量... */
+}
+```
+
+## 📄 许可证
+
+MIT License
+
+## 🤝 贡献
+
+欢迎提交Issue和Pull Request！
+
+---
+
+**享受你的简约导航体验！** 🎉
