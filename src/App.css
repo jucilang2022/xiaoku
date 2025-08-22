@@ -834,7 +834,7 @@ body::-webkit-scrollbar {
 .delete-comment-btn {
   position: absolute;
   bottom: 25px;
-  right: 0;
+  right: 10px;
   background: transparent;
   color: #ff4757;
   border: none;
