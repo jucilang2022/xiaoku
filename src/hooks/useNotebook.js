@@ -52,7 +52,7 @@ export const useNotebook = (currentUser) => {
             text: newPostText.trim(),
             image: selectedImage,
             timestamp: new Date().toLocaleString('zh-CN'),
-            likes: 0
+            comments: []
         }
 
         const updatedPosts = [newPost, ...posts]
@@ -69,9 +69,30 @@ export const useNotebook = (currentUser) => {
         savePosts(updatedPosts)
     }
 
-    const handleLikePost = (postId) => {
+    const handleAddComment = (postId, commentText) => {
+        if (!commentText.trim()) return
+
+        const newComment = {
+            id: Date.now(),
+            text: commentText.trim(),
+            author: currentUser.username,
+            authorAvatar: currentUser.avatar || '/vite.svg',
+            timestamp: new Date().toLocaleString('zh-CN')
+        }
+
         const updatedPosts = posts.map(post =>
-            post.id === postId ? { ...post, likes: post.likes + 1 } : post
+            post.id === postId
+                ? { ...post, comments: [...post.comments, newComment] }
+                : post
+        )
+        savePosts(updatedPosts)
+    }
+
+    const handleDeleteComment = (postId, commentId) => {
+        const updatedPosts = posts.map(post =>
+            post.id === postId
+                ? { ...post, comments: post.comments.filter(comment => comment.id !== commentId) }
+                : post
         )
         savePosts(updatedPosts)
     }
@@ -96,7 +117,8 @@ export const useNotebook = (currentUser) => {
         handleImageSelect,
         handlePostSubmit,
         handleDeletePost,
-        handleLikePost,
+        handleAddComment,
+        handleDeleteComment,
         handleRemoveImage,
         clearPosts
     }
