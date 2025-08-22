@@ -49,15 +49,21 @@ export const useAuth = () => {
         try {
             if (isLoginMode) {
                 // 登录逻辑
+                const email = authForm.username + '@xiaoku.fun'
+                console.log('尝试登录:', { username: authForm.username, email })
+
                 const { data, error } = await supabase.auth.signInWithPassword({
-                    email: authForm.username + '@xiaoku.fun', // 使用你的域名
+                    email: email,
                     password: authForm.password
                 })
 
                 if (error) {
+                    console.error('登录错误详情:', error)
                     setAuthError('登录失败: ' + error.message)
                     return
                 }
+
+                console.log('登录成功:', data)
 
                 setShowAuthModal(false)
                 setAuthForm({ username: '', password: '', confirmPassword: '' })
@@ -73,22 +79,27 @@ export const useAuth = () => {
                     return
                 }
 
+                const email = authForm.username + '@xiaoku.fun'
+                console.log('尝试注册:', { username: authForm.username, email })
+
                 const { data, error } = await supabase.auth.signUp({
-                    email: authForm.username + '@xiaoku.fun', // 使用你的域名
+                    email: email,
                     password: authForm.password,
                     options: {
                         data: {
                             username: authForm.username,
                             avatar: '/vite.svg'
-                        },
-                        emailRedirectTo: undefined // 禁用邮箱重定向
+                        }
                     }
                 })
 
                 if (error) {
+                    console.error('注册错误详情:', error)
                     setAuthError('注册失败: ' + error.message)
                     return
                 }
+
+                console.log('注册成功:', data)
 
                 setShowAuthModal(false)
                 setAuthForm({ username: '', password: '', confirmPassword: '' })
@@ -100,9 +111,36 @@ export const useAuth = () => {
 
     const handleLogout = async () => {
         try {
-            await supabase.auth.signOut()
+            console.log('开始退出登录...')
+
+            // 先清除本地状态
+            setIsLoggedIn(false)
+            setCurrentUser(null)
+
+            // 尝试调用 Supabase 退出
+            const { error } = await supabase.auth.signOut()
+
+            if (error) {
+                console.error('Supabase 退出失败:', error)
+                // 即使 Supabase 退出失败，本地状态已经清除
+                // 尝试强制清除会话
+                try {
+                    await supabase.auth.setSession(null)
+                } catch (clearError) {
+                    console.error('清除会话失败:', clearError)
+                }
+            } else {
+                console.log('退出登录成功')
+            }
+
+            // 确保本地存储也被清除
+            localStorage.removeItem('supabase.auth.token')
+
         } catch (error) {
-            console.error('登出失败:', error)
+            console.error('退出登录异常:', error)
+            // 确保本地状态被清除
+            setIsLoggedIn(false)
+            setCurrentUser(null)
         }
     }
 
