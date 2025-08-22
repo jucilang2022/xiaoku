@@ -1,10 +1,33 @@
+import { useState } from 'react'
+import { Camera, Trash2 } from 'lucide-react'
+
 const SettingsSidebar = ({
     showSettings,
     isLoggedIn,
     currentUser,
     onClose,
-    onOpenAuthModal
+    onOpenAuthModal,
+    onUpdateAvatar
 }) => {
+    const [isChangingAvatar, setIsChangingAvatar] = useState(false)
+
+    const handleAvatarChange = (e) => {
+        const file = e.target.files[0]
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+                const newAvatar = e.target.result
+                onUpdateAvatar(newAvatar)
+                setIsChangingAvatar(false)
+            }
+            reader.readAsDataURL(file)
+        }
+    }
+
+    const resetToDefaultAvatar = () => {
+        onUpdateAvatar('/vite.svg')
+    }
+
     return (
         <div className={`settings-sidebar ${showSettings ? 'open' : ''}`}>
             <div className="settings-header">
@@ -19,6 +42,34 @@ const SettingsSidebar = ({
                     <>
                         <div className="settings-section">
                             <h4>个人资料</h4>
+
+                            {/* 头像设置 */}
+                            <div className="avatar-settings">
+                                <div className="current-avatar">
+                                    <img src={currentUser?.avatar || '/vite.svg'} alt="当前头像" className="settings-avatar" />
+                                </div>
+                                <div className="avatar-actions">
+                                    <label className="avatar-upload-btn">
+                                        <Camera size={16} />
+                                        更换头像
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleAvatarChange}
+                                            style={{ display: 'none' }}
+                                        />
+                                    </label>
+                                    <button
+                                        className="avatar-reset-btn"
+                                        onClick={resetToDefaultAvatar}
+                                        title="重置为默认头像"
+                                    >
+                                        <Trash2 size={16} />
+                                        重置头像
+                                    </button>
+                                </div>
+                            </div>
+
                             <div className="settings-item">
                                 <span>用户名：{currentUser?.username}</span>
                             </div>
