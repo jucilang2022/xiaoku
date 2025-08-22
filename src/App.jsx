@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Settings } from 'lucide-react'
 import './App.css'
 
 // 导入组件
