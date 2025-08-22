@@ -39,6 +39,43 @@ body {
   transition: var(--transition);
 }
 
+/* 隐藏滚动条样式 */
+.app::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+.app::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* 为整个页面隐藏滚动条 */
+html {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+html::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari and Opera */
+}
+
+/* 为body隐藏滚动条 */
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
 .app.dark-mode {
   --primary-bg: #000000;
   --secondary-bg: #ffffff;
@@ -393,6 +430,13 @@ body {
   resize: vertical;
   min-height: 80px;
   transition: var(--transition);
+  /* 隐藏滚动条 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.post-textarea::-webkit-scrollbar {
+  display: none;
 }
 
 .post-textarea:focus {
@@ -499,6 +543,13 @@ body {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  /* 隐藏滚动条 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.posts-container::-webkit-scrollbar {
+  display: none;
 }
 
 .empty-posts {
@@ -835,6 +886,13 @@ body {
   transition: right 0.3s ease;
   z-index: 999;
   overflow-y: auto;
+  /* 隐藏滚动条 */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.settings-sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .settings-sidebar.open {
@@ -983,4 +1041,30 @@ body {
   background: var(--hover-bg);
   border-color: #2560eb;
   color: #2560eb;
+}
+
+/* 通用滚动条隐藏样式 */
+* {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari and Opera */
+}
+
+/* 确保所有可滚动元素都隐藏滚动条 */
+.scrollable,
+.scrollable::-webkit-scrollbar,
+[class*="scroll"]::-webkit-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollable::-webkit-scrollbar,
+[class*="scroll"]::-webkit-scrollbar {
+  display: none;
 }
