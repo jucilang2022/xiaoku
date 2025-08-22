@@ -108,6 +108,39 @@ export const useNotebook = (currentUser) => {
         }
     }
 
+    // 更新所有历史评论中当前用户的头像
+    const updateUserAvatarInComments = () => {
+        if (!currentUser) return
+
+        const updatedPosts = posts.map(post => ({
+            ...post,
+            comments: post.comments.map(comment =>
+                comment.author === currentUser.username
+                    ? { ...comment, authorAvatar: currentUser.avatar || '/vite.svg' }
+                    : comment
+            )
+        }))
+
+        // 只有在头像确实有变化时才保存
+        const hasChanges = posts.some(post =>
+            post.comments.some(comment =>
+                comment.author === currentUser.username &&
+                comment.authorAvatar !== (currentUser.avatar || '/vite.svg')
+            )
+        )
+
+        if (hasChanges) {
+            savePosts(updatedPosts)
+        }
+    }
+
+    // 当用户头像变化时，更新所有评论中的头像
+    useEffect(() => {
+        if (currentUser && posts.length > 0) {
+            updateUserAvatarInComments()
+        }
+    }, [currentUser?.avatar])
+
     return {
         posts,
         newPostText,
