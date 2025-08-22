@@ -200,7 +200,7 @@ const Notebook = ({
                                         <div key={comment.id} className="comment-item">
                                             <div className="comment-header">
                                                 <div className="comment-author-info">
-                                                    <img src={comment.authorAvatar} alt="头像" className="comment-author-avatar" />
+                                                    <img src={comment.author === currentUser?.username ? currentUser?.avatar || '/vite.svg' : comment.authorAvatar} alt="头像" className="comment-author-avatar" />
                                                     <span className="comment-author">{comment.author}</span>
                                                 </div>
                                                 <span className="comment-time">{comment.timestamp}</span>
