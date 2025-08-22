@@ -43,7 +43,8 @@ function App() {
     handleImageSelect,
     handlePostSubmit,
     handleDeletePost,
-    handleLikePost,
+    handleAddComment,
+    handleDeleteComment,
     handleRemoveImage
   } = useNotebook(currentUser)
 
@@ -103,7 +104,8 @@ function App() {
             onRemoveImage={handleRemoveImage}
             onSubmitPost={handlePostSubmit}
             onDeletePost={handleDeletePost}
-            onLikePost={handleLikePost}
+            onAddComment={handleAddComment}
+            onDeleteComment={handleDeleteComment}
             onOpenAuthModal={openAuthModal}
           />
         </main>
