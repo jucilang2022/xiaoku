@@ -5,6 +5,33 @@
   box-sizing: border-box;
 }
 
+/* 防止移动端输入时页面放大 */
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* 允许输入框内的文本选择 */
+input,
+textarea,
+select {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 防止iOS Safari中的缩放问题 */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {}
+
 /* 根元素和字体设置 */
 :root {
   --primary-bg: #ffffff;
@@ -1304,29 +1331,6 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-/* 防止移动端输入时页面缩放 */
-input,
-textarea,
-select {
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
-/* 防止移动端页面缩放 */
-html {
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  text-size-adjust: 100%;
-}
-
 /* 移动端输入框优化 */
 @media (max-width: 768px) {
 
@@ -1337,25 +1341,5 @@ body {
     -webkit-transform: none !important;
     -webkit-appearance: none;
     border-radius: 0;
-  }
-
-  /* 确保搜索框不会缩放 */
-  .search-input {
-    -webkit-text-size-adjust: 100%;
-  }
-
-  /* 确保帖子输入框不会缩放 */
-  .post-textarea {
-    -webkit-text-size-adjust: 100%;
-  }
-
-  /* 确保评论输入框不会缩放 */
-  .comment-textarea {
-    -webkit-text-size-adjust: 100%;
-  }
-
-  /* 确保认证表单不会缩放 */
-  .auth-field input {
-    -webkit-text-size-adjust: 100%;
   }
 }
