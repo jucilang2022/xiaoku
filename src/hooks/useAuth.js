@@ -105,6 +105,22 @@ export const useAuth = () => {
         setAuthForm(prev => ({ ...prev, [field]: value }))
     }
 
+    const updateAvatar = (newAvatar) => {
+        if (!currentUser) return
+
+        // 更新当前用户头像
+        const updatedUser = { ...currentUser, avatar: newAvatar }
+        setCurrentUser(updatedUser)
+        localStorage.setItem('currentUser', JSON.stringify(updatedUser))
+
+        // 更新用户列表中的头像
+        const users = JSON.parse(localStorage.getItem('users') || '[]')
+        const updatedUsers = users.map(user =>
+            user.id === currentUser.id ? updatedUser : user
+        )
+        localStorage.setItem('users', JSON.stringify(updatedUsers))
+    }
+
     return {
         isLoggedIn,
         currentUser,
@@ -116,6 +132,7 @@ export const useAuth = () => {
         handleLogout,
         openAuthModal,
         closeAuthModal,
-        updateAuthForm
+        updateAuthForm,
+        updateAvatar
     }
 }
