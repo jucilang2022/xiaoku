@@ -1,4 +1,5 @@
-import { Image, Send, Trash2, User, UserPlus } from 'lucide-react'
+import { useState } from 'react'
+import { Image, Send, Trash2, User, UserPlus, MessageCircle } from 'lucide-react'
 
 const Notebook = ({
     isLoggedIn,
@@ -12,9 +13,29 @@ const Notebook = ({
     onRemoveImage,
     onSubmitPost,
     onDeletePost,
-    onLikePost,
+    onAddComment,
+    onDeleteComment,
     onOpenAuthModal
 }) => {
+    const [commentTexts, setCommentTexts] = useState({})
+    const [showCommentInputs, setShowCommentInputs] = useState({})
+
+    const handleCommentSubmit = (postId) => {
+        const commentText = commentTexts[postId] || ''
+        if (commentText.trim()) {
+            onAddComment(postId, commentText)
+            setCommentTexts(prev => ({ ...prev, [postId]: '' }))
+            setShowCommentInputs(prev => ({ ...prev, [postId]: false }))
+        }
+    }
+
+    const toggleCommentInput = (postId) => {
+        setShowCommentInputs(prev => ({ ...prev, [postId]: !prev[postId] }))
+        if (!showCommentInputs[postId]) {
+            setCommentTexts(prev => ({ ...prev, [postId]: '' }))
+        }
+    }
+
     if (!isLoggedIn) {
         return (
             <section className="category-section">
@@ -107,7 +128,11 @@ const Notebook = ({
                                     <span className="post-time">{post.timestamp}</span>
                                 </div>
                                 <button
-                                    onClick={() => onDeletePost(post.id)}
+                                    onClick={() => {
+                                        if (window.confirm('确定要删除这条帖子吗？')) {
+                                            onDeletePost(post.id)
+                                        }
+                                    }}
                                     className="delete-post-btn"
                                     title="删除"
                                 >
@@ -129,12 +154,77 @@ const Notebook = ({
 
                             <div className="post-footer">
                                 <button
-                                    onClick={() => onLikePost(post.id)}
-                                    className="like-btn"
+                                    onClick={() => toggleCommentInput(post.id)}
+                                    className="comment-btn"
+                                    title="评论"
                                 >
-                                    ❤️ {post.likes}
+                                    <MessageCircle size={16} />
+                                    {post.comments?.length || 0} 评论
                                 </button>
                             </div>
+
+                            {/* 评论输入框 */}
+                            {showCommentInputs[post.id] && (
+                                <div className="comment-input-container">
+                                    <textarea
+                                        placeholder="写下你的评论..."
+                                        value={commentTexts[post.id] || ''}
+                                        onChange={(e) => setCommentTexts(prev => ({ ...prev, [post.id]: e.target.value }))}
+                                        className="comment-textarea"
+                                        rows="2"
+                                    />
+                                    <div className="comment-input-actions">
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowCommentInputs(prev => ({ ...prev, [post.id]: false }))}
+                                            className="comment-cancel-btn"
+                                        >
+                                            取消
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleCommentSubmit(post.id)}
+                                            disabled={!commentTexts[post.id]?.trim()}
+                                            className="comment-submit-btn"
+                                        >
+                                            发送
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* 评论列表 */}
+                            {post.comments && post.comments.length > 0 && (
+                                <div className="comments-container">
+                                    {post.comments.map((comment) => (
+                                        <div key={comment.id} className="comment-item">
+                                            <div className="comment-header">
+                                                <div className="comment-author-info">
+                                                    <img src={comment.authorAvatar} alt="头像" className="comment-author-avatar" />
+                                                    <span className="comment-author">{comment.author}</span>
+                                                </div>
+                                                <span className="comment-time">{comment.timestamp}</span>
+                                            </div>
+                                            <div className="comment-content">
+                                                <p>{comment.text}</p>
+                                            </div>
+                                            {comment.author === currentUser?.username && (
+                                                <button
+                                                    onClick={() => {
+                                                        if (window.confirm('确定要删除这条评论吗？')) {
+                                                            onDeleteComment(post.id, comment.id)
+                                                        }
+                                                    }}
+                                                    className="delete-comment-btn"
+                                                    title="删除评论"
+                                                >
+                                                    <Trash2 size={12} />
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     ))
                 )}
