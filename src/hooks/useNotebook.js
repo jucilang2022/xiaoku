@@ -8,34 +8,11 @@ export const useNotebook = (currentUser) => {
     const [isPosting, setIsPosting] = useState(false)
 
     useEffect(() => {
-        if (currentUser) {
-            console.log('用户状态变化，重新加载帖子:', currentUser)
+        if (currentUser?.id) {
+            console.log('用户登录，加载帖子，用户ID:', currentUser.id)
             loadPosts()
         }
-    }, [currentUser])
-
-    // 添加认证状态检查
-    const checkAuthAndLoadPosts = async () => {
-        try {
-            const { data: { session } } = await supabase.auth.getSession()
-            if (session && session.user) {
-                console.log('当前会话用户:', session.user)
-                if (currentUser?.id !== session.user.id) {
-                    console.log('用户ID不匹配，更新用户状态')
-                    // 这里可以触发用户状态更新
-                }
-            } else {
-                console.log('没有有效会话')
-            }
-        } catch (error) {
-            console.error('检查认证状态失败:', error)
-        }
-    }
-
-    // 在组件挂载时检查认证状态
-    useEffect(() => {
-        checkAuthAndLoadPosts()
-    }, [])
+    }, [currentUser?.id]) // 只依赖用户ID，而不是整个currentUser对象
 
     const loadPosts = async () => {
         if (!currentUser) return
