@@ -637,8 +637,8 @@ body::-webkit-scrollbar {
 .post-footer {
   display: flex;
   justify-content: flex-start;
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: 6px;
+  padding-top: 6px;
   border-top: 1px solid var(--border-color);
 }
 
@@ -743,8 +743,8 @@ body::-webkit-scrollbar {
 }
 
 .comments-container {
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: 8px;
+  padding-top: 8px;
   border-top: 1px solid var(--border-color);
 }
 
@@ -752,7 +752,7 @@ body::-webkit-scrollbar {
   padding: 16px;
   background: #000000;
   border-radius: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 2px;
   position: relative;
 }
 
@@ -1117,6 +1117,76 @@ body::-webkit-scrollbar {
   border-bottom: 1px solid var(--border-color);
 }
 
+/* 头像设置样式 */
+.avatar-settings {
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.current-avatar {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.settings-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--border-color);
+  object-fit: cover;
+}
+
+.avatar-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  justify-content: center;
+}
+
+.avatar-upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #007ACC 0%, #005A9E 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.avatar-upload-btn:hover {
+  background: #1e4bd8;
+  transform: translateY(-1px);
+}
+
+.avatar-reset-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 13px;
+}
+
+.avatar-reset-btn:hover {
+  background: var(--hover-bg);
+  color: var(--text-primary);
+  border-color: #ff4757;
+}
+
 .settings-item {
   margin-bottom: 16px;
 }
@@ -1155,7 +1225,7 @@ body::-webkit-scrollbar {
 /* 登录提示样式 */
 .login-prompt {
   text-align: center;
-  padding: 40px 20px;
+  padding: 20px 20px;
 }
 
 .login-prompt p {
@@ -1238,7 +1308,6 @@ body::-webkit-scrollbar {
 input,
 textarea,
 select {
-  font-size: 16px !important;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -1264,7 +1333,6 @@ body {
   input,
   textarea,
   select {
-    font-size: 16px !important;
     transform: none !important;
     -webkit-transform: none !important;
     -webkit-appearance: none;
@@ -1273,25 +1341,21 @@ body {
 
   /* 确保搜索框不会缩放 */
   .search-input {
-    font-size: 16px !important;
     -webkit-text-size-adjust: 100%;
   }
 
   /* 确保帖子输入框不会缩放 */
   .post-textarea {
-    font-size: 16px !important;
     -webkit-text-size-adjust: 100%;
   }
 
   /* 确保评论输入框不会缩放 */
   .comment-textarea {
-    font-size: 16px !important;
     -webkit-text-size-adjust: 100%;
   }
 
   /* 确保认证表单不会缩放 */
   .auth-field input {
-    font-size: 16px !important;
     -webkit-text-size-adjust: 100%;
   }
 }
