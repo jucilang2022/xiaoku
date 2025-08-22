@@ -17,13 +17,21 @@ export const useAuth = () => {
         checkAuthStatus()
 
         // 监听认证状态变化
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+            console.log('认证状态变化:', event, session?.user?.id)
+
             if (event === 'SIGNED_IN' && session) {
+                console.log('用户登录:', session.user)
                 setCurrentUser(session.user)
                 setIsLoggedIn(true)
             } else if (event === 'SIGNED_OUT') {
+                console.log('用户退出')
                 setCurrentUser(null)
                 setIsLoggedIn(false)
+            } else if (event === 'TOKEN_REFRESHED' && session) {
+                console.log('令牌刷新，更新用户状态')
+                setCurrentUser(session.user)
+                setIsLoggedIn(true)
             }
         })
 
@@ -32,13 +40,21 @@ export const useAuth = () => {
 
     const checkAuthStatus = async () => {
         try {
+            console.log('检查认证状态...')
             const { data: { session } } = await supabase.auth.getSession()
-            if (session) {
+            if (session && session.user) {
+                console.log('找到有效会话，用户ID:', session.user.id)
                 setCurrentUser(session.user)
                 setIsLoggedIn(true)
+            } else {
+                console.log('没有有效会话')
+                setCurrentUser(null)
+                setIsLoggedIn(false)
             }
         } catch (error) {
             console.error('检查认证状态失败:', error)
+            setCurrentUser(null)
+            setIsLoggedIn(false)
         }
     }
 
