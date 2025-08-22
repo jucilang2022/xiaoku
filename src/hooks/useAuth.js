@@ -50,7 +50,7 @@ export const useAuth = () => {
             if (isLoginMode) {
                 // 登录逻辑
                 const { data, error } = await supabase.auth.signInWithPassword({
-                    email: authForm.username + '@example.com', // 临时邮箱格式
+                    email: authForm.username + '@xiaoku.fun', // 使用你的域名
                     password: authForm.password
                 })
 
@@ -74,13 +74,14 @@ export const useAuth = () => {
                 }
 
                 const { data, error } = await supabase.auth.signUp({
-                    email: authForm.username + '@example.com', // 临时邮箱格式
+                    email: authForm.username + '@xiaoku.fun', // 使用你的域名
                     password: authForm.password,
                     options: {
                         data: {
                             username: authForm.username,
                             avatar: '/vite.svg'
-                        }
+                        },
+                        emailRedirectTo: undefined // 禁用邮箱重定向
                     }
                 })
 
@@ -91,7 +92,6 @@ export const useAuth = () => {
 
                 setShowAuthModal(false)
                 setAuthForm({ username: '', password: '', confirmPassword: '' })
-                setAuthError('注册成功！请检查邮箱验证链接。')
             }
         } catch (error) {
             setAuthError('操作失败: ' + error.message)
