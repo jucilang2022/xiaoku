@@ -7,6 +7,13 @@ export const useNotebook = (currentUser) => {
     const [selectedImage, setSelectedImage] = useState(null)
     const [isPosting, setIsPosting] = useState(false)
 
+    // 调试信息
+    console.log('useNotebook 当前用户状态:', {
+        hasUser: !!currentUser,
+        userId: currentUser?.id,
+        userMetadata: currentUser?.user_metadata
+    })
+
     useEffect(() => {
         if (currentUser) {
             console.log('用户状态变化，重新加载帖子:', currentUser)
@@ -20,9 +27,11 @@ export const useNotebook = (currentUser) => {
             const { data: { session } } = await supabase.auth.getSession()
             if (session && session.user) {
                 console.log('当前会话用户:', session.user)
-                if (currentUser?.id !== session.user.id) {
-                    console.log('用户ID不匹配，更新用户状态')
-                    // 这里可以触发用户状态更新
+                // 如果当前用户状态为空或者用户ID不匹配，直接加载帖子
+                if (!currentUser || currentUser.id !== session.user.id) {
+                    console.log('用户状态不匹配或为空，直接加载帖子')
+                    // 直接使用会话中的用户信息加载帖子
+                    await loadPostsWithUser(session.user)
                 }
             } else {
                 console.log('没有有效会话')
@@ -37,11 +46,31 @@ export const useNotebook = (currentUser) => {
         checkAuthAndLoadPosts()
     }, [])
 
+    // 监听认证状态变化，确保在用户登录后能加载帖子
+    useEffect(() => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if (event === 'SIGNED_IN' && session?.user) {
+                console.log('检测到用户登录，尝试加载帖子')
+                await loadPostsWithUser(session.user)
+            }
+        })
+
+        return () => subscription.unsubscribe()
+    }, [])
+
     const loadPosts = async () => {
         if (!currentUser) return
+        await loadPostsWithUser(currentUser)
+    }
+
+    const loadPostsWithUser = async (user) => {
+        if (!user || !user.id) {
+            console.log('用户信息无效，无法加载帖子')
+            return
+        }
 
         try {
-            console.log('加载帖子，用户ID:', currentUser.id)
+            console.log('加载帖子，用户ID:', user.id)
 
             const { data, error } = await supabase
                 .from(TABLES.POSTS)
@@ -49,7 +78,7 @@ export const useNotebook = (currentUser) => {
                     *,
                     comments (*)
                 `)
-                .eq('user_id', currentUser.id)
+                .eq('user_id', user.id)
                 .order('created_at', { ascending: false })
 
             if (error) {
