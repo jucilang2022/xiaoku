@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { supabase, TABLES } from '../lib/supabase'
 
 export const useNotebook = (currentUser) => {
     const [posts, setPosts] = useState([])
@@ -12,17 +13,31 @@ export const useNotebook = (currentUser) => {
         }
     }, [currentUser])
 
-    const loadPosts = () => {
+    const loadPosts = async () => {
         if (!currentUser) return
-        const savedPosts = localStorage.getItem(`notebook-posts-${currentUser.id}`)
-        if (savedPosts) {
-            setPosts(JSON.parse(savedPosts))
+
+        try {
+            const { data, error } = await supabase
+                .from(TABLES.POSTS)
+                .select(`
+                    *,
+                    comments (*)
+                `)
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false })
+
+            if (error) {
+                console.error('加载帖子失败:', error)
+                return
+            }
+
+            setPosts(data || [])
+        } catch (error) {
+            console.error('加载帖子失败:', error)
         }
     }
 
     const savePosts = (newPosts) => {
-        if (!currentUser) return
-        localStorage.setItem(`notebook-posts-${currentUser.id}`, JSON.stringify(newPosts))
         setPosts(newPosts)
     }
 
@@ -41,105 +56,133 @@ export const useNotebook = (currentUser) => {
         }
     }
 
-    const handlePostSubmit = (e) => {
+    const handlePostSubmit = async (e) => {
         e.preventDefault()
         if (!newPostText.trim() && !selectedImage) return
 
         setIsPosting(true)
 
-        const newPost = {
-            id: Date.now(),
-            text: newPostText.trim(),
-            image: selectedImage,
-            timestamp: new Date().toLocaleString('zh-CN'),
-            comments: []
+        try {
+            const newPost = {
+                text: newPostText.trim(),
+                image: selectedImage,
+                user_id: currentUser.id,
+                created_at: new Date().toISOString()
+            }
+
+            const { data, error } = await supabase
+                .from(TABLES.POSTS)
+                .insert([newPost])
+                .select()
+
+            if (error) {
+                console.error('发布帖子失败:', error)
+                return
+            }
+
+            // 重新加载帖子
+            await loadPosts()
+
+            // 重置表单
+            setNewPostText('')
+            setSelectedImage(null)
+        } catch (error) {
+            console.error('发布帖子失败:', error)
+        } finally {
+            setIsPosting(false)
         }
-
-        const updatedPosts = [newPost, ...posts]
-        savePosts(updatedPosts)
-
-        // 重置表单
-        setNewPostText('')
-        setSelectedImage(null)
-        setIsPosting(false)
     }
 
-    const handleDeletePost = (postId) => {
-        const updatedPosts = posts.filter(post => post.id !== postId)
-        savePosts(updatedPosts)
+    const handleDeletePost = async (postId) => {
+        try {
+            const { error } = await supabase
+                .from(TABLES.POSTS)
+                .delete()
+                .eq('id', postId)
+
+            if (error) {
+                console.error('删除帖子失败:', error)
+                return
+            }
+
+            // 重新加载帖子
+            await loadPosts()
+        } catch (error) {
+            console.error('删除帖子失败:', error)
+        }
     }
 
-    const handleAddComment = (postId, commentText) => {
+    const handleAddComment = async (postId, commentText) => {
         if (!commentText.trim()) return
 
-        const newComment = {
-            id: Date.now(),
-            text: commentText.trim(),
-            author: currentUser.username,
-            authorAvatar: currentUser.avatar || '/vite.svg',
-            timestamp: new Date().toLocaleString('zh-CN')
-        }
+        try {
+            const newComment = {
+                text: commentText.trim(),
+                author: currentUser.user_metadata?.username || currentUser.email,
+                author_avatar: currentUser.user_metadata?.avatar || '/vite.svg',
+                post_id: postId,
+                user_id: currentUser.id,
+                created_at: new Date().toISOString()
+            }
 
-        const updatedPosts = posts.map(post =>
-            post.id === postId
-                ? { ...post, comments: [...post.comments, newComment] }
-                : post
-        )
-        savePosts(updatedPosts)
+            const { error } = await supabase
+                .from(TABLES.COMMENTS)
+                .insert([newComment])
+
+            if (error) {
+                console.error('添加评论失败:', error)
+                return
+            }
+
+            // 重新加载帖子
+            await loadPosts()
+        } catch (error) {
+            console.error('添加评论失败:', error)
+        }
     }
 
-    const handleDeleteComment = (postId, commentId) => {
-        const updatedPosts = posts.map(post =>
-            post.id === postId
-                ? { ...post, comments: post.comments.filter(comment => comment.id !== commentId) }
-                : post
-        )
-        savePosts(updatedPosts)
+    const handleDeleteComment = async (postId, commentId) => {
+        try {
+            const { error } = await supabase
+                .from(TABLES.COMMENTS)
+                .delete()
+                .eq('id', commentId)
+
+            if (error) {
+                console.error('删除评论失败:', error)
+                return
+            }
+
+            // 重新加载帖子
+            await loadPosts()
+        } catch (error) {
+            console.error('删除评论失败:', error)
+        }
     }
 
     const handleRemoveImage = () => {
         setSelectedImage(null)
     }
 
-    const clearPosts = () => {
-        setPosts([])
-        if (currentUser) {
-            localStorage.removeItem(`notebook-posts-${currentUser.id}`)
+    const clearPosts = async () => {
+        try {
+            const { error } = await supabase
+                .from(TABLES.POSTS)
+                .delete()
+                .eq('user_id', currentUser.id)
+
+            if (error) {
+                console.error('清空帖子失败:', error)
+                return
+            }
+
+            setPosts([])
+        } catch (error) {
+            console.error('清空帖子失败:', error)
         }
     }
 
-    // 更新所有历史评论中当前用户的头像
-    const updateUserAvatarInComments = () => {
-        if (!currentUser) return
 
-        const updatedPosts = posts.map(post => ({
-            ...post,
-            comments: post.comments.map(comment =>
-                comment.author === currentUser.username
-                    ? { ...comment, authorAvatar: currentUser.avatar || '/vite.svg' }
-                    : comment
-            )
-        }))
-
-        // 只有在头像确实有变化时才保存
-        const hasChanges = posts.some(post =>
-            post.comments.some(comment =>
-                comment.author === currentUser.username &&
-                comment.authorAvatar !== (currentUser.avatar || '/vite.svg')
-            )
-        )
-
-        if (hasChanges) {
-            savePosts(updatedPosts)
-        }
-    }
-
-    // 当用户头像变化时，更新所有评论中的头像
-    useEffect(() => {
-        if (currentUser && posts.length > 0) {
-            updateUserAvatarInComments()
-        }
-    }, [currentUser?.avatar])
 
     return {
         posts,

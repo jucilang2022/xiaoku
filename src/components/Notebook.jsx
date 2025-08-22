@@ -59,14 +59,14 @@ const Notebook = ({
 
     return (
         <section className="category-section">
-            <h2 className="category-title">{currentUser?.username}的记事簿</h2>
+            <h2 className="category-title">{currentUser?.user_metadata?.username || currentUser?.email}的记事簿</h2>
 
             {/* 发布新帖子 */}
             <div className="post-form-container">
                 <form onSubmit={onSubmitPost} className="post-form">
                     <div className="post-input-wrapper">
                         <textarea
-                            placeholder={`${currentUser?.username || '你'}这一刻的想法...`}
+                            placeholder={`${currentUser?.user_metadata?.username || currentUser?.email || '你'}这一刻的想法...`}
                             value={newPostText}
                             onChange={(e) => onNewPostTextChange(e.target.value)}
                             className="post-textarea"
@@ -114,7 +114,7 @@ const Notebook = ({
             <div className="posts-container">
                 {posts.length === 0 ? (
                     <div className="empty-posts">
-                        <p>{currentUser?.username}还没有发布任何内容，快来分享你的第一个想法吧！</p>
+                        <p>{currentUser?.user_metadata?.username || currentUser?.email}还没有发布任何内容，快来分享你的第一个想法吧！</p>
                     </div>
                 ) : (
                     posts.map((post) => (
@@ -122,10 +122,10 @@ const Notebook = ({
                             <div className="post-header">
                                 <div className="post-info">
                                     <div className="post-author-info">
-                                        <img src={currentUser?.avatar || '/vite.svg'} alt="头像" className="post-author-avatar" />
-                                        <span className="post-author">{currentUser?.username}</span>
+                                        <img src={currentUser?.user_metadata?.avatar || '/vite.svg'} alt="头像" className="post-author-avatar" />
+                                        <span className="post-author">{currentUser?.user_metadata?.username || currentUser?.email}</span>
                                     </div>
-                                    <span className="post-time">{post.timestamp}</span>
+                                    <span className="post-time">{new Date(post.created_at).toLocaleString('zh-CN')}</span>
                                 </div>
                                 <button
                                     onClick={() => {
@@ -200,15 +200,15 @@ const Notebook = ({
                                         <div key={comment.id} className="comment-item">
                                             <div className="comment-header">
                                                 <div className="comment-author-info">
-                                                    <img src={comment.author === currentUser?.username ? currentUser?.avatar || '/vite.svg' : comment.authorAvatar} alt="头像" className="comment-author-avatar" />
+                                                    <img src={comment.author_avatar || '/vite.svg'} alt="头像" className="comment-author-avatar" />
                                                     <span className="comment-author">{comment.author}</span>
                                                 </div>
-                                                <span className="comment-time">{comment.timestamp}</span>
+                                                <span className="comment-time">{new Date(comment.created_at).toLocaleString('zh-CN')}</span>
                                             </div>
                                             <div className="comment-content">
                                                 <p>{comment.text}</p>
                                             </div>
-                                            {comment.author === currentUser?.username && (
+                                            {comment.author === (currentUser?.user_metadata?.username || currentUser?.email) && (
                                                 <button
                                                     onClick={() => {
                                                         if (window.confirm('确定要删除这条评论吗？')) {
