@@ -911,7 +911,7 @@ body::-webkit-scrollbar {
   border-radius: 16px;
   padding: 0;
   max-width: 400px;
-  width: 100%;
+  width: 90%;
   box-shadow: var(--shadow-heavy);
   border: 1px solid var(--border-color);
 }
@@ -1232,4 +1232,66 @@ body::-webkit-scrollbar {
 .scrollable::-webkit-scrollbar,
 [class*="scroll"]::-webkit-scrollbar {
   display: none;
+}
+
+/* 防止移动端输入时页面缩放 */
+input,
+textarea,
+select {
+  font-size: 16px !important;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* 防止移动端页面缩放 */
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* 移动端输入框优化 */
+@media (max-width: 768px) {
+
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+
+  /* 确保搜索框不会缩放 */
+  .search-input {
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* 确保帖子输入框不会缩放 */
+  .post-textarea {
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* 确保评论输入框不会缩放 */
+  .comment-textarea {
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* 确保认证表单不会缩放 */
+  .auth-field input {
+    font-size: 16px !important;
+    -webkit-text-size-adjust: 100%;
+  }
 }
