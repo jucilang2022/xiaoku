@@ -164,6 +164,12 @@ export const useAuth = () => {
     const updateAvatar = async (newAvatar) => {
         if (!currentUser) return
 
+        // 如果头像没有变化，直接返回
+        if (currentUser.user_metadata?.avatar === newAvatar) {
+            console.log('头像没有变化，跳过更新')
+            return
+        }
+
         try {
             const { error } = await supabase.auth.updateUser({
                 data: { avatar: newAvatar }
@@ -174,20 +180,16 @@ export const useAuth = () => {
                 return
             }
 
-            // 重新获取用户会话以确保数据同步
-            const { data: { session } } = await supabase.auth.getSession()
-            if (session) {
-                setCurrentUser(session.user)
-            } else {
-                // 如果无法获取会话，则手动更新本地状态
-                setCurrentUser(prev => ({
-                    ...prev,
-                    user_metadata: {
-                        ...prev.user_metadata,
-                        avatar: newAvatar
-                    }
-                }))
-            }
+            // 只更新头像字段，避免重新获取整个用户会话
+            setCurrentUser(prev => ({
+                ...prev,
+                user_metadata: {
+                    ...prev.user_metadata,
+                    avatar: newAvatar
+                }
+            }))
+
+            console.log('头像更新成功:', newAvatar)
         } catch (error) {
             console.error('更新头像失败:', error)
         }
