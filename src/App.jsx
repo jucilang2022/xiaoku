@@ -31,7 +31,8 @@ function App() {
     handleLogout,
     openAuthModal,
     closeAuthModal,
-    updateAuthForm
+    updateAuthForm,
+    updateAvatar
   } = useAuth()
 
   const {
@@ -135,6 +136,7 @@ function App() {
           currentUser={currentUser}
           onClose={toggleSettings}
           onOpenAuthModal={openAuthModal}
+          onUpdateAvatar={updateAvatar}
         />
 
         {/* 页脚 */}
