@@ -174,14 +174,20 @@ export const useAuth = () => {
                 return
             }
 
-            // 更新本地状态
-            setCurrentUser(prev => ({
-                ...prev,
-                user_metadata: {
-                    ...prev.user_metadata,
-                    avatar: newAvatar
-                }
-            }))
+            // 重新获取用户会话以确保数据同步
+            const { data: { session } } = await supabase.auth.getSession()
+            if (session) {
+                setCurrentUser(session.user)
+            } else {
+                // 如果无法获取会话，则手动更新本地状态
+                setCurrentUser(prev => ({
+                    ...prev,
+                    user_metadata: {
+                        ...prev.user_metadata,
+                        avatar: newAvatar
+                    }
+                }))
+            }
         } catch (error) {
             console.error('更新头像失败:', error)
         }
