@@ -203,7 +203,16 @@ const Notebook = ({
                                         <div key={comment.id || comment._id} className="comment-item">
                                             <div className="comment-header">
                                                 <div className="comment-author-info">
-                                                    <img src={comment.authorAvatar || comment.author_avatar || '/vite.svg'} alt="头像" className="comment-author-avatar" />
+                                                    <img
+                                                        src={
+                                                            // 如果是当前用户的评论，显示当前头像；否则显示保存的头像
+                                                            comment.author === displayName
+                                                                ? (currentUser?.avatar || '/vite.svg')
+                                                                : (comment.authorAvatar || comment.author_avatar || '/vite.svg')
+                                                        }
+                                                        alt="头像"
+                                                        className="comment-author-avatar"
+                                                    />
                                                     <span className="comment-author">{comment.author}</span>
                                                 </div>
                                                 <span className="comment-time">{new Date(comment.createdAt || comment.created_at).toLocaleString('zh-CN')}</span>
