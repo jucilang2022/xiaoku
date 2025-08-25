@@ -4,7 +4,6 @@ import './App.css'
 // 导入组件
 import TopToolbar from './components/TopToolbar'
 import Header from './components/Header'
-import NavigationCards from './components/NavigationCards'
 import Notebook from './components/Notebook'
 import AuthModal from './components/AuthModal'
 import SettingsSidebar from './components/SettingsSidebar'
@@ -16,7 +15,6 @@ import { useNotebook } from './hooks/useNotebook'
 
 function App() {
   const [searchQuery, setSearchQuery] = useState('')
-  const [hoveredCard, setHoveredCard] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
 
   // 使用自定义 hooks
@@ -56,10 +54,6 @@ function App() {
     }
   }
 
-  const handleCardClick = (url) => {
-    window.open(url, '_blank')
-  }
-
   const toggleSettings = () => {
     setShowSettings(!showSettings)
   }
@@ -85,13 +79,6 @@ function App() {
 
         {/* 主要内容区域 */}
         <main className="main-content">
-          {/* 导航卡片区域 */}
-          <NavigationCards
-            hoveredCard={hoveredCard}
-            onCardHover={setHoveredCard}
-            onCardClick={handleCardClick}
-          />
-
           {/* 记事簿模块 */}
           <Notebook
             isLoggedIn={isLoggedIn}

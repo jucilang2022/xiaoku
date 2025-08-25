@@ -260,85 +260,7 @@ body::-webkit-scrollbar {
   background: linear-gradient(135deg, #2560eb 0%, #4dfb95 100%);
 }
 
-/* 卡片网格 */
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 20px;
-  margin-bottom: 30px;
-}
 
-/* 导航卡片 */
-.nav-card {
-  background: var(--primary-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 14px;
-  padding: 18px 15px;
-  text-align: center;
-  cursor: pointer;
-  transition: var(--transition);
-  box-shadow: var(--shadow-light);
-  position: relative;
-  overflow: hidden;
-}
-
-.nav-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(135deg, #2560eb 0%, #4dfb95 100%);
-  transform: scaleX(0);
-  transition: var(--transition);
-}
-
-.nav-card:hover::before {
-  transform: scaleX(1);
-}
-
-.nav-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-heavy);
-  border-color: #2560eb;
-}
-
-.nav-card.hovered {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-heavy);
-}
-
-.card-icon {
-  margin-bottom: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 36px;
-  width: 36px;
-  margin: 0 auto 12px;
-  border-radius: 10px;
-  transition: var(--transition);
-  color: white;
-}
-
-.nav-card:hover .card-icon {
-  background: var(--hover-bg);
-  transform: scale(1.1);
-  color: white;
-}
-
-.card-name {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-primary);
-  display: block;
-  transition: var(--transition);
-}
-
-.nav-card:hover .card-name {
-  color: #2560eb;
-}
 
 /* 页脚样式 */
 .footer {
@@ -367,19 +289,7 @@ body::-webkit-scrollbar {
     max-width: 400px;
   }
 
-  .cards-grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px;
-  }
 
-  .nav-card {
-    padding: 15px 12px;
-  }
-
-  .card-icon {
-    height: 30px;
-    width: 30px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -397,14 +307,7 @@ body::-webkit-scrollbar {
     font-size: 14px;
   }
 
-  .cards-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
 
-  .nav-card {
-    padding: 12px 10px;
-  }
 
   .category-title {
     font-size: 1.3rem;
