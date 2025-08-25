@@ -1,4 +1,7 @@
-const API_BASE_URL = (import.meta?.env?.VITE_API_BASE_URL && import.meta.env.VITE_API_BASE_URL.trim()) || (typeof window !== 'undefined' && window.location && window.location.hostname !== 'localhost' ? '/api' : 'http://localhost:3001/api');
+// 获取你的Render后端域名，请替换为实际的域名
+const RENDER_BACKEND_URL = 'https://xiaoku.onrender.com';
+
+const API_BASE_URL = (import.meta?.env?.VITE_API_BASE_URL && import.meta.env.VITE_API_BASE_URL.trim()) || (typeof window !== 'undefined' && window.location && window.location.hostname !== 'localhost' ? `${RENDER_BACKEND_URL}/api` : 'http://localhost:3001/api');
 
 // 获取存储的token
 const getToken = () => {
