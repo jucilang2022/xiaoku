@@ -17,11 +17,37 @@ export const useAuth = () => {
         checkAuthStatus()
     }, [])
 
+    const saveCurrentUserSafely = (rawUser) => {
+        const minimalUser = {
+            id: rawUser?.id || rawUser?._id || rawUser?.user_id,
+            email: rawUser?.email || rawUser?.user_metadata?.email || '',
+            username: rawUser?.username || rawUser?.user_metadata?.username || '',
+            avatar: rawUser?.avatar || rawUser?.user_metadata?.avatar || '',
+            createdAt: rawUser?.createdAt || rawUser?.created_at || null
+        }
+
+        try {
+            localStorage.setItem('currentUser', JSON.stringify(minimalUser))
+        } catch (e) {
+            console.error("写入localStorage失败，尝试使用sessionStorage保存currentUser:", e)
+            try {
+                sessionStorage.setItem('currentUser', JSON.stringify(minimalUser))
+            } catch (err) {
+                console.error('写入sessionStorage也失败，放弃持久化currentUser:', err)
+            }
+        }
+
+        return minimalUser
+    }
+
     const checkAuthStatus = async () => {
         try {
             // 检查是否有有效的token
             if (authAPI.isAuthenticated()) {
-                const savedUser = localStorage.getItem('currentUser')
+                let savedUser = localStorage.getItem('currentUser')
+                if (!savedUser) {
+                    savedUser = sessionStorage.getItem('currentUser')
+                }
                 if (savedUser) {
                     const user = JSON.parse(savedUser)
                     setCurrentUser(user)
@@ -53,9 +79,9 @@ export const useAuth = () => {
                 console.log('登录成功:', response)
 
                 // 保存用户信息到localStorage
-                localStorage.setItem('currentUser', JSON.stringify(response.user))
+                const minimal = saveCurrentUserSafely(response.user)
 
-                setCurrentUser(response.user)
+                setCurrentUser(minimal)
                 setIsLoggedIn(true)
                 setShowAuthModal(false)
                 setAuthForm({ username: '', password: '', confirmPassword: '' })
@@ -83,9 +109,9 @@ export const useAuth = () => {
                 console.log('注册成功:', response)
 
                 // 保存用户信息到localStorage
-                localStorage.setItem('currentUser', JSON.stringify(response.user))
+                const minimal = saveCurrentUserSafely(response.user)
 
-                setCurrentUser(response.user)
+                setCurrentUser(minimal)
                 setIsLoggedIn(true)
                 setShowAuthModal(false)
                 setAuthForm({ username: '', password: '', confirmPassword: '' })
@@ -145,7 +171,16 @@ export const useAuth = () => {
             }
 
             setCurrentUser(updatedUser)
-            localStorage.setItem('currentUser', JSON.stringify(updatedUser))
+            try {
+                localStorage.setItem('currentUser', JSON.stringify(updatedUser))
+            } catch (e) {
+                console.error('更新头像时写入localStorage失败，尝试sessionStorage:', e)
+                try {
+                    sessionStorage.setItem('currentUser', JSON.stringify(updatedUser))
+                } catch (err) {
+                    console.error('更新头像时写入sessionStorage也失败:', err)
+                }
+            }
 
             console.log('头像更新成功:', response.message)
         } catch (error) {

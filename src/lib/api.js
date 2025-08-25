@@ -77,8 +77,9 @@ export const authAPI = {
 
     // 退出登录
     logout: () => {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('currentUser');
+        try { localStorage.removeItem('authToken'); } catch { }
+        try { localStorage.removeItem('currentUser'); } catch { }
+        try { sessionStorage.removeItem('currentUser'); } catch { }
     },
 
     // 检查是否已登录
