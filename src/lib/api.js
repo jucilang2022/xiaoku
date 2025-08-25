@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:3001/api';
+const API_BASE_URL = (import.meta?.env?.VITE_API_BASE_URL && import.meta.env.VITE_API_BASE_URL.trim()) || (typeof window !== 'undefined' && window.location && window.location.hostname !== 'localhost' ? '/api' : 'http://localhost:3001/api');
 
 // 获取存储的token
 const getToken = () => {
@@ -25,8 +25,12 @@ const apiRequest = async (endpoint, options = {}) => {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+            let errorText = `HTTP error! status: ${response.status}`;
+            try {
+                const errorData = await response.json();
+                errorText = errorData.error || errorText;
+            } catch { }
+            throw new Error(errorText);
         }
 
         return await response.json();

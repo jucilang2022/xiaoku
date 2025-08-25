@@ -8,6 +8,11 @@ import { connectDB } from './src/lib/mongodb.js';
 import User from './src/models/User.js';
 import Post from './src/models/Post.js';
 import Comment from './src/models/Comment.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -282,6 +287,14 @@ app.delete('/api/posts/user/:userId', authenticateToken, async (req, res) => {
         console.error('清空帖子失败:', error);
         res.status(500).json({ error: '清空帖子失败' });
     }
+});
+
+// 托管前端静态文件（生产）
+const distPath = path.resolve(__dirname, 'dist');
+app.use(express.static(distPath));
+// 非 /api 的路由全部交给前端
+app.get(/^(?!\/api).*/, (req, res) => {
+    res.sendFile(path.join(distPath, 'index.html'));
 });
 
 // 启动服务器
