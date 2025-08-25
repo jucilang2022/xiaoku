@@ -16,10 +16,11 @@ async function startServer() {
         const { default: app } = await import('./server.js');
 
         const PORT = process.env.PORT || 3001;
-        app.listen(PORT, () => {
+        app.listen(PORT, '0.0.0.0', () => {
             console.log(`🚀 生产服务器运行在端口 ${PORT}`);
             console.log(`📊 使用MongoDB数据库`);
             console.log(`🌍 环境: ${process.env.NODE_ENV || 'development'}`);
+            console.log(`🌐 监听地址: 0.0.0.0:${PORT}`);
         });
 
     } catch (error) {
