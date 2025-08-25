@@ -22,7 +22,7 @@ export const useAuth = () => {
             id: rawUser?.id || rawUser?._id || rawUser?.user_id,
             email: rawUser?.email || rawUser?.user_metadata?.email || '',
             username: rawUser?.username || rawUser?.user_metadata?.username || '',
-            avatar: rawUser?.avatar || rawUser?.user_metadata?.avatar || '',
+            // 移除avatar字段，避免base64数据占用大量存储空间
             createdAt: rawUser?.createdAt || rawUser?.created_at || null
         }
 
@@ -50,6 +50,7 @@ export const useAuth = () => {
                 }
                 if (savedUser) {
                     const user = JSON.parse(savedUser)
+                    // 只恢复基本信息，头像等完整信息需要重新获取
                     setCurrentUser(user)
                     setIsLoggedIn(true)
                 }
@@ -78,10 +79,9 @@ export const useAuth = () => {
 
                 console.log('登录成功:', response)
 
-                // 保存用户信息到localStorage
+                // 保存精简用户信息到存储，完整信息到状态
                 const minimal = saveCurrentUserSafely(response.user)
-
-                setCurrentUser(minimal)
+                setCurrentUser(response.user) // 保存完整用户信息到状态
                 setIsLoggedIn(true)
                 setShowAuthModal(false)
                 setAuthForm({ username: '', password: '', confirmPassword: '' })
@@ -108,10 +108,9 @@ export const useAuth = () => {
 
                 console.log('注册成功:', response)
 
-                // 保存用户信息到localStorage
+                // 保存精简用户信息到存储，完整信息到状态
                 const minimal = saveCurrentUserSafely(response.user)
-
-                setCurrentUser(minimal)
+                setCurrentUser(response.user) // 保存完整用户信息到状态
                 setIsLoggedIn(true)
                 setShowAuthModal(false)
                 setAuthForm({ username: '', password: '', confirmPassword: '' })
@@ -171,16 +170,7 @@ export const useAuth = () => {
             }
 
             setCurrentUser(updatedUser)
-            try {
-                localStorage.setItem('currentUser', JSON.stringify(updatedUser))
-            } catch (e) {
-                console.error('更新头像时写入localStorage失败，尝试sessionStorage:', e)
-                try {
-                    sessionStorage.setItem('currentUser', JSON.stringify(updatedUser))
-                } catch (err) {
-                    console.error('更新头像时写入sessionStorage也失败:', err)
-                }
-            }
+            // 不再保存头像数据到存储中，避免配额问题
 
             console.log('头像更新成功:', response.message)
         } catch (error) {
