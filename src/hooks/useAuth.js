@@ -24,7 +24,6 @@ export const useAuth = () => {
                 const savedUser = localStorage.getItem('currentUser')
                 if (savedUser) {
                     const user = JSON.parse(savedUser)
-                    console.log('从localStorage恢复用户信息:', user)
                     setCurrentUser(user)
                     setIsLoggedIn(true)
                 }
@@ -52,7 +51,6 @@ export const useAuth = () => {
                 })
 
                 console.log('登录成功:', response)
-                console.log('用户信息:', response.user)
 
                 // 保存用户信息到localStorage
                 localStorage.setItem('currentUser', JSON.stringify(response.user))
@@ -83,7 +81,6 @@ export const useAuth = () => {
                 })
 
                 console.log('注册成功:', response)
-                console.log('用户信息:', response.user)
 
                 // 保存用户信息到localStorage
                 localStorage.setItem('currentUser', JSON.stringify(response.user))
@@ -138,11 +135,8 @@ export const useAuth = () => {
         if (!currentUser) return
 
         try {
-            console.log('开始更新头像:', newAvatar)
-
             // 调用后端API更新头像
             const response = await authAPI.updateAvatar(newAvatar)
-            console.log('后端头像更新响应:', response)
 
             // 更新本地状态
             const updatedUser = {
@@ -153,8 +147,7 @@ export const useAuth = () => {
             setCurrentUser(updatedUser)
             localStorage.setItem('currentUser', JSON.stringify(updatedUser))
 
-            console.log('头像更新成功，本地状态已更新:', response.message)
-            console.log('更新后的用户信息:', updatedUser)
+            console.log('头像更新成功:', response.message)
         } catch (error) {
             console.error('更新头像失败:', error)
             // 如果后端更新失败，回滚本地状态
