@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase, TABLES } from '../lib/supabase'
+import { authAPI } from '../lib/api'
 
 export const useAuth = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -15,30 +15,23 @@ export const useAuth = () => {
 
     useEffect(() => {
         checkAuthStatus()
-
-        // 监听认证状态变化
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' && session) {
-                setCurrentUser(session.user)
-                setIsLoggedIn(true)
-            } else if (event === 'SIGNED_OUT') {
-                setCurrentUser(null)
-                setIsLoggedIn(false)
-            }
-        })
-
-        return () => subscription.unsubscribe()
     }, [])
 
     const checkAuthStatus = async () => {
         try {
-            const { data: { session } } = await supabase.auth.getSession()
-            if (session) {
-                setCurrentUser(session.user)
-                setIsLoggedIn(true)
+            // 检查是否有有效的token
+            if (authAPI.isAuthenticated()) {
+                const savedUser = localStorage.getItem('currentUser')
+                if (savedUser) {
+                    const user = JSON.parse(savedUser)
+                    setCurrentUser(user)
+                    setIsLoggedIn(true)
+                }
             }
         } catch (error) {
             console.error('检查认证状态失败:', error)
+            // 清除无效的认证信息
+            authAPI.logout()
         }
     }
 
@@ -52,19 +45,18 @@ export const useAuth = () => {
                 const email = authForm.username + '@xiaoku.fun'
                 console.log('尝试登录:', { username: authForm.username, email })
 
-                const { data, error } = await supabase.auth.signInWithPassword({
+                const response = await authAPI.login({
                     email: email,
                     password: authForm.password
                 })
 
-                if (error) {
-                    console.error('登录错误详情:', error)
-                    setAuthError('登录失败: ' + error.message)
-                    return
-                }
+                console.log('登录成功:', response)
 
-                console.log('登录成功:', data)
+                // 保存用户信息到localStorage
+                localStorage.setItem('currentUser', JSON.stringify(response.user))
 
+                setCurrentUser(response.user)
+                setIsLoggedIn(true)
                 setShowAuthModal(false)
                 setAuthForm({ username: '', password: '', confirmPassword: '' })
             } else {
@@ -82,25 +74,19 @@ export const useAuth = () => {
                 const email = authForm.username + '@xiaoku.fun'
                 console.log('尝试注册:', { username: authForm.username, email })
 
-                const { data, error } = await supabase.auth.signUp({
+                const response = await authAPI.register({
                     email: email,
-                    password: authForm.password,
-                    options: {
-                        data: {
-                            username: authForm.username,
-                            avatar: '/vite.svg'
-                        }
-                    }
+                    username: authForm.username,
+                    password: authForm.password
                 })
 
-                if (error) {
-                    console.error('注册错误详情:', error)
-                    setAuthError('注册失败: ' + error.message)
-                    return
-                }
+                console.log('注册成功:', response)
 
-                console.log('注册成功:', data)
+                // 保存用户信息到localStorage
+                localStorage.setItem('currentUser', JSON.stringify(response.user))
 
+                setCurrentUser(response.user)
+                setIsLoggedIn(true)
                 setShowAuthModal(false)
                 setAuthForm({ username: '', password: '', confirmPassword: '' })
             }
@@ -113,34 +99,18 @@ export const useAuth = () => {
         try {
             console.log('开始退出登录...')
 
-            // 先清除本地状态
+            // 清除本地状态和存储
             setIsLoggedIn(false)
             setCurrentUser(null)
+            authAPI.logout()
 
-            // 尝试调用 Supabase 退出
-            const { error } = await supabase.auth.signOut()
-
-            if (error) {
-                console.error('Supabase 退出失败:', error)
-                // 即使 Supabase 退出失败，本地状态已经清除
-                // 尝试强制清除会话
-                try {
-                    await supabase.auth.setSession(null)
-                } catch (clearError) {
-                    console.error('清除会话失败:', clearError)
-                }
-            } else {
-                console.log('退出登录成功')
-            }
-
-            // 确保本地存储也被清除
-            localStorage.removeItem('supabase.auth.token')
-
+            console.log('退出登录成功')
         } catch (error) {
             console.error('退出登录异常:', error)
             // 确保本地状态被清除
             setIsLoggedIn(false)
             setCurrentUser(null)
+            authAPI.logout()
         }
     }
 
@@ -164,32 +134,15 @@ export const useAuth = () => {
     const updateAvatar = async (newAvatar) => {
         if (!currentUser) return
 
-        // 如果头像没有变化，直接返回
-        if (currentUser.user_metadata?.avatar === newAvatar) {
-            console.log('头像没有变化，跳过更新')
-            return
-        }
-
         try {
-            const { error } = await supabase.auth.updateUser({
-                data: { avatar: newAvatar }
-            })
-
-            if (error) {
-                console.error('更新头像失败:', error)
-                return
+            // 更新本地状态
+            const updatedUser = {
+                ...currentUser,
+                avatar: newAvatar
             }
 
-            // 只更新头像字段，避免重新获取整个用户会话
-            setCurrentUser(prev => ({
-                ...prev,
-                user_metadata: {
-                    ...prev.user_metadata,
-                    avatar: newAvatar
-                }
-            }))
-
-            console.log('头像更新成功:', newAvatar)
+            setCurrentUser(updatedUser)
+            localStorage.setItem('currentUser', JSON.stringify(updatedUser))
         } catch (error) {
             console.error('更新头像失败:', error)
         }

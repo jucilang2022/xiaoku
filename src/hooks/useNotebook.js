@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase, TABLES } from '../lib/supabase'
+import { postsAPI, commentsAPI } from '../lib/api'
 
 export const useNotebook = (currentUser) => {
     const [posts, setPosts] = useState([])
@@ -8,11 +8,11 @@ export const useNotebook = (currentUser) => {
     const [isPosting, setIsPosting] = useState(false)
 
     useEffect(() => {
-        if (currentUser?.id) {
-            console.log('用户登录，加载帖子，用户ID:', currentUser.id)
+        if (currentUser) {
+            console.log('用户状态变化，重新加载帖子:', currentUser)
             loadPosts()
         }
-    }, [currentUser?.id]) // 只依赖用户ID，而不是整个currentUser对象
+    }, [currentUser])
 
     const loadPosts = async () => {
         if (!currentUser) return
@@ -20,20 +20,7 @@ export const useNotebook = (currentUser) => {
         try {
             console.log('加载帖子，用户ID:', currentUser.id)
 
-            const { data, error } = await supabase
-                .from(TABLES.POSTS)
-                .select(`
-                    *,
-                    comments (*)
-                `)
-                .eq('user_id', currentUser.id)
-                .order('created_at', { ascending: false })
-
-            if (error) {
-                console.error('加载帖子失败:', error)
-                return
-            }
-
+            const data = await postsAPI.getUserPosts(currentUser.id)
             console.log('加载到的帖子:', data)
             setPosts(data || [])
         } catch (error) {
@@ -69,20 +56,10 @@ export const useNotebook = (currentUser) => {
         try {
             const newPost = {
                 text: newPostText.trim(),
-                image: selectedImage,
-                user_id: currentUser.id,
-                created_at: new Date().toISOString()
+                image: selectedImage
             }
 
-            const { data, error } = await supabase
-                .from(TABLES.POSTS)
-                .insert([newPost])
-                .select()
-
-            if (error) {
-                console.error('发布帖子失败:', error)
-                return
-            }
+            await postsAPI.createPost(newPost)
 
             // 重新加载帖子
             await loadPosts()
@@ -99,15 +76,7 @@ export const useNotebook = (currentUser) => {
 
     const handleDeletePost = async (postId) => {
         try {
-            const { error } = await supabase
-                .from(TABLES.POSTS)
-                .delete()
-                .eq('id', postId)
-
-            if (error) {
-                console.error('删除帖子失败:', error)
-                return
-            }
+            await postsAPI.deletePost(postId)
 
             // 重新加载帖子
             await loadPosts()
@@ -122,21 +91,10 @@ export const useNotebook = (currentUser) => {
         try {
             const newComment = {
                 text: commentText.trim(),
-                author: currentUser.user_metadata?.username || currentUser.email,
-                author_avatar: currentUser.user_metadata?.avatar || '/vite.svg',
-                post_id: postId,
-                user_id: currentUser.id,
-                created_at: new Date().toISOString()
+                postId: postId
             }
 
-            const { error } = await supabase
-                .from(TABLES.COMMENTS)
-                .insert([newComment])
-
-            if (error) {
-                console.error('添加评论失败:', error)
-                return
-            }
+            await commentsAPI.addComment(newComment)
 
             // 重新加载帖子
             await loadPosts()
@@ -147,15 +105,7 @@ export const useNotebook = (currentUser) => {
 
     const handleDeleteComment = async (postId, commentId) => {
         try {
-            const { error } = await supabase
-                .from(TABLES.COMMENTS)
-                .delete()
-                .eq('id', commentId)
-
-            if (error) {
-                console.error('删除评论失败:', error)
-                return
-            }
+            await commentsAPI.deleteComment(commentId)
 
             // 重新加载帖子
             await loadPosts()
@@ -170,23 +120,12 @@ export const useNotebook = (currentUser) => {
 
     const clearPosts = async () => {
         try {
-            const { error } = await supabase
-                .from(TABLES.POSTS)
-                .delete()
-                .eq('user_id', currentUser.id)
-
-            if (error) {
-                console.error('清空帖子失败:', error)
-                return
-            }
-
+            await postsAPI.clearUserPosts(currentUser.id)
             setPosts([])
         } catch (error) {
             console.error('清空帖子失败:', error)
         }
     }
-
-
 
     return {
         posts,
