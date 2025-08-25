@@ -88,10 +88,12 @@ export const authAPI = {
 
     // 更新用户头像
     updateAvatar: async (avatar) => {
+        console.log('调用头像更新API:', avatar)
         const response = await apiRequest('/auth/avatar', {
             method: 'PUT',
             body: JSON.stringify({ avatar }),
         });
+        console.log('头像更新API响应:', response)
         return response;
     }
 };
