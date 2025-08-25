@@ -25,7 +25,12 @@ app.use((req, res, next) => {
 });
 
 // 中间件
-app.use(cors());
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production'
+        ? ['https://www.xiaoku.fun', 'https://xiaoku.fun']
+        : true,
+    credentials: true
+}));
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 
