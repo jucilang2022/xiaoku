@@ -160,8 +160,8 @@ app.get('/api/posts/:userId', authenticateToken, async (req, res) => {
                     .sort({ createdAt: 1 });
 
                 return {
-                    ...post.toObject(),
-                    comments
+                    ...post.toJSON(),
+                    comments: comments.map(c => c.toJSON())
                 };
             })
         );

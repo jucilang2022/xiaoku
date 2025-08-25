@@ -36,6 +36,9 @@ const Notebook = ({
         }
     }
 
+    const displayName = currentUser?.username || currentUser?.email || currentUser?.user_metadata?.username || currentUser?.user_metadata?.email
+    const displayAvatar = currentUser?.avatar || currentUser?.user_metadata?.avatar || '/vite.svg'
+
     if (!isLoggedIn) {
         return (
             <section className="category-section">
@@ -59,14 +62,14 @@ const Notebook = ({
 
     return (
         <section className="category-section">
-            <h2 className="category-title">{currentUser?.user_metadata?.username || currentUser?.email}的记事簿</h2>
+            <h2 className="category-title">{displayName}的记事簿</h2>
 
             {/* 发布新帖子 */}
             <div className="post-form-container">
                 <form onSubmit={onSubmitPost} className="post-form">
                     <div className="post-input-wrapper">
                         <textarea
-                            placeholder={`${currentUser?.user_metadata?.username || currentUser?.email || '你'}这一刻的想法...`}
+                            placeholder={`${displayName || '你'}这一刻的想法...`}
                             value={newPostText}
                             onChange={(e) => onNewPostTextChange(e.target.value)}
                             className="post-textarea"
@@ -114,23 +117,23 @@ const Notebook = ({
             <div className="posts-container">
                 {posts.length === 0 ? (
                     <div className="empty-posts">
-                        <p>{currentUser?.user_metadata?.username || currentUser?.email}还没有发布任何内容，快来分享你的第一个想法吧！</p>
+                        <p>{displayName}还没有发布任何内容，快来分享你的第一个想法吧！</p>
                     </div>
                 ) : (
                     posts.map((post) => (
-                        <div key={post.id} className="post-card">
+                        <div key={post.id || post._id} className="post-card">
                             <div className="post-header">
                                 <div className="post-info">
                                     <div className="post-author-info">
-                                        <img src={currentUser?.user_metadata?.avatar || '/vite.svg'} alt="头像" className="post-author-avatar" />
-                                        <span className="post-author">{currentUser?.user_metadata?.username || currentUser?.email}</span>
+                                        <img src={displayAvatar} alt="头像" className="post-author-avatar" />
+                                        <span className="post-author">{displayName}</span>
                                     </div>
-                                    <span className="post-time">{new Date(post.created_at).toLocaleString('zh-CN')}</span>
+                                    <span className="post-time">{new Date(post.createdAt || post.created_at).toLocaleString('zh-CN')}</span>
                                 </div>
                                 <button
                                     onClick={() => {
                                         if (window.confirm('确定要删除这条帖子吗？')) {
-                                            onDeletePost(post.id)
+                                            onDeletePost(post.id || post._id)
                                         }
                                     }}
                                     className="delete-post-btn"
@@ -148,13 +151,13 @@ const Notebook = ({
 
                             {post.image && (
                                 <div className="post-image">
-                                    <img src={post.image.data} alt="帖子图片" />
+                                    <img src={post.image.data || post.image} alt="帖子图片" />
                                 </div>
                             )}
 
                             <div className="post-footer">
                                 <button
-                                    onClick={() => toggleCommentInput(post.id)}
+                                    onClick={() => toggleCommentInput(post.id || post._id)}
                                     className="comment-btn"
                                     title="评论"
                                 >
@@ -164,27 +167,27 @@ const Notebook = ({
                             </div>
 
                             {/* 评论输入框 */}
-                            {showCommentInputs[post.id] && (
+                            {showCommentInputs[post.id || post._id] && (
                                 <div className="comment-input-container">
                                     <textarea
                                         placeholder="写下你的评论..."
-                                        value={commentTexts[post.id] || ''}
-                                        onChange={(e) => setCommentTexts(prev => ({ ...prev, [post.id]: e.target.value }))}
+                                        value={commentTexts[post.id || post._id] || ''}
+                                        onChange={(e) => setCommentTexts(prev => ({ ...prev, [post.id || post._id]: e.target.value }))}
                                         className="comment-textarea"
                                         rows="2"
                                     />
                                     <div className="comment-input-actions">
                                         <button
                                             type="button"
-                                            onClick={() => setShowCommentInputs(prev => ({ ...prev, [post.id]: false }))}
+                                            onClick={() => setShowCommentInputs(prev => ({ ...prev, [post.id || post._id]: false }))}
                                             className="comment-cancel-btn"
                                         >
                                             取消
                                         </button>
                                         <button
                                             type="button"
-                                            onClick={() => handleCommentSubmit(post.id)}
-                                            disabled={!commentTexts[post.id]?.trim()}
+                                            onClick={() => handleCommentSubmit(post.id || post._id)}
+                                            disabled={!commentTexts[post.id || post._id]?.trim()}
                                             className="comment-submit-btn"
                                         >
                                             发送
@@ -197,22 +200,22 @@ const Notebook = ({
                             {post.comments && post.comments.length > 0 && (
                                 <div className="comments-container">
                                     {post.comments.map((comment) => (
-                                        <div key={comment.id} className="comment-item">
+                                        <div key={comment.id || comment._id} className="comment-item">
                                             <div className="comment-header">
                                                 <div className="comment-author-info">
-                                                    <img src={comment.author_avatar || '/vite.svg'} alt="头像" className="comment-author-avatar" />
+                                                    <img src={comment.authorAvatar || comment.author_avatar || '/vite.svg'} alt="头像" className="comment-author-avatar" />
                                                     <span className="comment-author">{comment.author}</span>
                                                 </div>
-                                                <span className="comment-time">{new Date(comment.created_at).toLocaleString('zh-CN')}</span>
+                                                <span className="comment-time">{new Date(comment.createdAt || comment.created_at).toLocaleString('zh-CN')}</span>
                                             </div>
                                             <div className="comment-content">
                                                 <p>{comment.text}</p>
                                             </div>
-                                            {comment.author === (currentUser?.user_metadata?.username || currentUser?.email) && (
+                                            {(comment.author === displayName) && (
                                                 <button
                                                     onClick={() => {
                                                         if (window.confirm('确定要删除这条评论吗？')) {
-                                                            onDeleteComment(post.id, comment.id)
+                                                            onDeleteComment(post.id || post._id, comment.id || comment._id)
                                                         }
                                                     }}
                                                     className="delete-comment-btn"
