@@ -155,6 +155,36 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
+// 更新用户头像
+app.put('/api/auth/avatar', authenticateToken, async (req, res) => {
+    try {
+        const { avatar } = req.body;
+
+        if (!avatar) {
+            return res.status(400).json({ error: '头像URL不能为空' });
+        }
+
+        // 更新用户头像
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id,
+            { avatar },
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: '用户不存在' });
+        }
+
+        res.json({
+            message: '头像更新成功',
+            user: updatedUser
+        });
+    } catch (error) {
+        console.error('更新头像失败:', error);
+        res.status(500).json({ error: '更新头像失败，请稍后重试' });
+    }
+});
+
 // 帖子相关API
 app.get('/api/posts/:userId', authenticateToken, async (req, res) => {
     try {

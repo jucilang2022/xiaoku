@@ -84,6 +84,15 @@ export const authAPI = {
     // 检查是否已登录
     isAuthenticated: () => {
         return !!getToken();
+    },
+
+    // 更新用户头像
+    updateAvatar: async (avatar) => {
+        const response = await apiRequest('/auth/avatar', {
+            method: 'PUT',
+            body: JSON.stringify({ avatar }),
+        });
+        return response;
     }
 };
 

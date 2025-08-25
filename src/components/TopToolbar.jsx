@@ -12,8 +12,8 @@ const TopToolbar = ({
             <div className="toolbar-left">
                 {isLoggedIn && (
                     <div className="user-welcome">
-                        <img src={currentUser?.user_metadata?.avatar || '/vite.svg'} alt="头像" className="user-avatar" />
-                        <span>欢迎, {currentUser?.user_metadata?.username || currentUser?.email}</span>
+                        <img src={currentUser?.avatar || '/vite.svg'} alt="头像" className="user-avatar" />
+                        <span>欢迎, {currentUser?.username || currentUser?.email}</span>
                     </div>
                 )}
             </div>

@@ -135,6 +135,9 @@ export const useAuth = () => {
         if (!currentUser) return
 
         try {
+            // 调用后端API更新头像
+            const response = await authAPI.updateAvatar(newAvatar)
+
             // 更新本地状态
             const updatedUser = {
                 ...currentUser,
@@ -143,8 +146,12 @@ export const useAuth = () => {
 
             setCurrentUser(updatedUser)
             localStorage.setItem('currentUser', JSON.stringify(updatedUser))
+
+            console.log('头像更新成功:', response.message)
         } catch (error) {
             console.error('更新头像失败:', error)
+            // 如果后端更新失败，回滚本地状态
+            throw error
         }
     }
 

@@ -46,7 +46,7 @@ const SettingsSidebar = ({
                             {/* 头像设置 */}
                             <div className="avatar-settings">
                                 <div className="current-avatar">
-                                    <img src={currentUser?.user_metadata?.avatar || '/vite.svg'} alt="当前头像" className="settings-avatar" />
+                                    <img src={currentUser?.avatar || '/vite.svg'} alt="当前头像" className="settings-avatar" />
                                 </div>
                                 <div className="avatar-actions">
                                     <label className="avatar-upload-btn">
@@ -71,7 +71,7 @@ const SettingsSidebar = ({
                             </div>
 
                             <div className="settings-item">
-                                <span>用户名：{currentUser?.user_metadata?.username || currentUser?.email}</span>
+                                <span>用户名：{currentUser?.username || currentUser?.email}</span>
                             </div>
                             <div className="settings-item">
                                 <span>注册时间：{new Date(currentUser?.createdAt).toLocaleDateString('zh-CN')}</span>
